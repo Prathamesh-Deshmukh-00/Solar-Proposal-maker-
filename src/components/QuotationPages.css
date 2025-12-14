@@ -1,0 +1,705 @@
+.quotation-page {
+    width: 794px;
+    height: 750px;
+    background: white;
+    padding: 40px;
+    font-family: 'Helvetica', Arial, sans-serif;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header-subtitle {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.header-logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a1a2e;
+}
+
+/* Footer */
+.page-footer {
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #64748b;
+}
+
+.page-footer-dark {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+}
+
+.page-footer-light {
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: white;
+}
+
+.footer-label {
+    font-size: 10px;
+    margin-bottom: 3px;
+}
+
+.footer-value {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Cover Page */
+.cover-page {
+    padding: 0;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Hero Image */
+.cover-hero {
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.cover-layout {
+    display: flex;
+    flex: 1;
+    position: relative;
+    min-height: 0;
+}
+
+/* Left Section */
+.cover-left {
+    flex: 0 0 260px;
+    padding: 30px 30px 25px 30px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cover-logo-section {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0;
+}
+
+.logo-icon {
+    flex-shrink: 0;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-brand {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin-bottom: 2px;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.logo-subtitle {
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    line-height: 1;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+    color: #666;
+}
+
+.cover-company-info {
+    margin-top: auto;
+    margin-bottom: 30px;
+}
+
+.company-name {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 0;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.cover-proposal-number {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.cover-proposal-number p {
+    margin: 0;
+}
+
+/* Vertical Divider */
+.cover-divider {
+    width: 1px;
+    background: #000;
+    margin: 0;
+}
+
+/* Right Section */
+.cover-right {
+    flex: 1;
+    padding: 30px 40px 25px 40px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.cover-main-title {
+    font-size: 56px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin: 0 0 40px 0;
+    line-height: 1;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.cover-system-details {
+    margin-bottom: 35px;
+}
+
+.cover-system-type {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.cover-date {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.4;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.cover-client-section {
+    margin-top: 0;
+}
+
+.cover-client-label {
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0 0 8px 0;
+    line-height: 1.6;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.cover-client-value {
+    font-weight: 400;
+}
+
+/* Cover Footer */
+.cover-footer {
+    background: #1a1a1a;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.footer-left {
+    display: flex;
+    gap: 60px;
+}
+
+.footer-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-label {
+    font-size: 10px;
+    font-weight: 400;
+    margin-bottom: 4px;
+    opacity: 0.8;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.footer-value {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.footer-logo {
+    flex-shrink: 0;
+}
+
+.footer-generated {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+
+
+/* Sections */
+.section-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    color: #1a1a2e;
+}
+
+.section-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0 0 30px 0;
+}
+
+.section-text {
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* Company Metrics */
+.company-metrics {
+    display: flex;
+    justify-content: space-around;
+    margin: 40px 0;
+}
+
+.metric-card {
+    background: #000;
+    color: white;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 150px;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 9px;
+}
+
+.amc-note {
+    font-size: 10px;
+    color: #64748b;
+    font-style: italic;
+    margin-top: 40px;
+}
+
+/* Generation Page (Third Page) */
+.generation-page-3 {
+    background: white;
+    color: #1a1a2e;
+}
+
+.roi-page {
+    background: #1a7f7f;
+    color: white;
+}
+
+.roi-header {
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.roi-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.roi-subtitle {
+    font-size: 14px;
+    margin: 0 0 30px 0;
+}
+
+.chart-image {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+    margin-bottom: 30px;
+    background: white;
+    border-radius: 8px;
+}
+
+.chart-image-generation {
+    width: 100%;
+    height: 600px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    background: #f5f5f5;
+}
+
+.chart-image-small {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 30px;
+}
+
+.metrics-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metric-box {
+    flex: 1;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #2dd4bf;
+}
+
+.metric-box-label {
+    font-size: 10px;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.metric-box-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a7f7f;
+}
+
+.financing-banner {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.financing-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #1a1a2e;
+    margin: 0 0 5px 0;
+}
+
+.financing-subtitle {
+    font-size: 10px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Performance Metrics */
+.performance-metrics {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px 0;
+}
+
+.performance-item {
+    text-align: center;
+}
+
+.performance-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #1a7f7f;
+}
+
+.performance-label {
+    font-size: 10px;
+    color: #64748b;
+}
+
+.disclaimer {
+    font-size: 9px;
+    color: #64748b;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+/* Tables */
+.components-table,
+.cost-table,
+.scope-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.components-table thead tr,
+.cost-table thead tr {
+    background: #1a1a2e;
+    color: white;
+}
+
+.components-table th,
+.components-table td,
+.cost-table th,
+.cost-table td,
+.scope-table td {
+    padding: 10px;
+    font-size: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.components-table .bold,
+.cost-table .bold {
+    font-weight: bold;
+}
+
+.table-note {
+    font-size: 9px;
+    color: #64748b;
+    margin: 0 0 20px 0;
+}
+
+/* Timeline */
+.timeline-list {
+    margin-bottom: 30px;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.timeline-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #1a7f7f;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.timeline-badge.active {
+    background: #1a1a2e;
+}
+
+.timeline-name {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.timeline-duration {
+    font-size: 10px;
+    color: #64748b;
+}
+
+.subsection-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 20px 0 15px 0;
+}
+
+.spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.spec-box {
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Payment Terms */
+.payment-terms {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.payment-stage {
+    text-align: center;
+    flex: 1;
+}
+
+.payment-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1a7f7f;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.payment-badge.active {
+    background: #1a1a2e;
+}
+
+.payment-percent {
+    font-size: 10px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.payment-label {
+    font-size: 8px;
+    color: #64748b;
+}
+
+/* Environment Page */
+.env-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.env-metric {
+    text-align: center;
+}
+
+.env-metric-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.env-metric-value {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.env-metric-value.teal {
+    color: #1a7f7f;
+}
+
+.env-metric-value.green {
+    color: #10b981;
+}
+
+.env-metric-value.amber {
+    color: #f59e0b;
+}
+
+/* Thank You Page */
+.thank-you-page {
+    padding: 0;
+}
+
+.thank-you-content {
+    padding: 40px;
+    padding-top: 100px;
+    text-align: center;
+}
+
+.thank-you-title {
+    font-size: 64px;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+}
+
+.thank-you-subtitle {
+    font-size: 16px;
+    color: #64748b;
+    margin: 0;
+}
+
+.contact-footer {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    padding: 20px 40px;
+    color: white;
+}
+
+.contact-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.contact-row:last-child {
+    margin-bottom: 0;
+}
+
+.contact-item {
+    flex: 1;
+}
+
+.contact-label {
+    font-size: 10px;
+    margin-bottom: 3px;
+}
+
+.contact-value {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.thank-you-footer {
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+    right: 40px;
+    text-align: center;
+    font-size: 10px;
+    color: #64748b;
+}
