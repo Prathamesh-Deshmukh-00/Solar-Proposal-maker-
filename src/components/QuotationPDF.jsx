@@ -58,24 +58,27 @@ const styles = StyleSheet.create({
     color: '#64748b'
   },
   roiPage: {
-    backgroundColor: '#1a7f7f',
+    backgroundColor: '#02746A',
     padding: 40
   },
   roiTitle: {
-    fontSize: 36,
-    fontWeight: 'bold',
+    fontSize: 34,
+    fontWeight: 300,
     color: '#FFFFFF',
-    marginBottom: 10
+    letterSpacing: 2,
+    marginBottom: 8
   },
   roiSubtitle: {
     fontSize: 14,
     color: '#FFFFFF',
-    marginBottom: 30
+    marginBottom: 20,
+    width: '100%',
+    textAlign: 'left'
   },
   chartImage: {
     width: '100%',
-    height: 300,
-    marginBottom: 30
+    height: 400,
+    marginBottom: 20
   },
   metricsRow: {
     flexDirection: 'row',
@@ -345,15 +348,15 @@ const GenerationPage = ({ data }) => {
 
       <View style={styles.metricsRow}>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#1a7f7f' }}>85%</Text>
+          <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#02746A' }}>85%</Text>
           <Text style={{ fontSize: 10, color: '#64748b' }}>PR: Performance Ratio</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#1a7f7f' }}>25%</Text>
+          <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#02746A' }}>25%</Text>
           <Text style={{ fontSize: 10, color: '#64748b' }}>Monsoon Dip</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#1a7f7f' }}>
+          <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#02746A' }}>
             {(data.result.outputs.ac_annual / 365).toFixed(1)} <Text style={{ fontSize: 12, fontWeight: 'normal' }}>Units</Text>
           </Text>
           <Text style={{ fontSize: 10, color: '#64748b' }}>Average daily generation</Text>
@@ -386,7 +389,7 @@ const GenerationPage = ({ data }) => {
 // ROI Summary Page
 const ROIPage = ({ data }) => (
   <Page size="A4" style={styles.roiPage}>
-    <View style={{ marginBottom: 25 }}>
+    <View style={{ marginBottom: 15 }}>
       <Text style={{ fontSize: 11, color: '#FFFFFF', letterSpacing: 0.3 }}>{data.formData.capacity}kW Ongrid Proposal</Text>
     </View>
 
@@ -396,7 +399,7 @@ const ROIPage = ({ data }) => (
     {data.charts.roiChart && <Image src={data.charts.roiChart} style={styles.chartImage} />}
 
     {/* Top three stat boxes - compact horizontal design */}
-    <View style={{ flexDirection: 'row', gap: 18, marginBottom: 32 }}>
+    <View style={{ flexDirection: 'row', gap: 15, marginBottom: 20 }}>
       {/* Box 1 */}
       <View style={{ flex: 1, border: '1px solid #FFFFFF', paddingVertical: 15, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
@@ -431,10 +434,10 @@ const ROIPage = ({ data }) => (
     </View>
 
     {/* Middle text - textAlign: center, marginBottom: 24px */}
-    <View style={{ alignItems: 'center', marginBottom: 24 }}>
+    <View style={{ alignItems: 'center', marginBottom: 16 }}>
       {/* color: #ffffff, fontSize: 18px, fontWeight: 400, letterSpacing: 0.04em */}
       <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 400, letterSpacing: 0.72 }}>
-        Easy Financing Options Available With Reslink
+        Easy Financing Options Available
       </Text>
     </View>
 
@@ -460,7 +463,7 @@ const ROIPage = ({ data }) => (
       paddingVertical: 15,
       borderTopWidth: 1,
       borderTopColor: '#FFFFFF',
-      marginTop: 20,
+      marginTop: 15,
     },
   ]}
 >
@@ -561,7 +564,7 @@ const TimelinePage = ({ data }) => (
         { step: 6, name: 'Commissioning', duration: '6th week' }
       ].map((item) => (
         <View key={item.step} style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
-          <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: item.step === 3 ? '#1a1a2e' : '#1a7f7f', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
+          <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: item.step === 3 ? '#1a1a2e' : '#02746A', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
             <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }}>{item.step}</Text>
           </View>
           <View style={{ flex: 1 }}>
@@ -648,7 +651,7 @@ const OfferTermsPage = ({ data }) => (
         { stage: 4, percent: '10%', label: 'Net metering' }
       ].map((term) => (
         <View key={term.stage} style={{ alignItems: 'center', flex: 1 }}>
-          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: term.stage === 2 ? '#1a1a2e' : '#1a7f7f', justifyContent: 'center', alignItems: 'center', marginBottom: 5 }}>
+          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: term.stage === 2 ? '#1a1a2e' : '#02746A', justifyContent: 'center', alignItems: 'center', marginBottom: 5 }}>
             <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' }}>{term.stage}</Text>
           </View>
           <Text style={{ fontSize: 10, fontWeight: 'bold' }}>{term.percent}</Text>
@@ -681,7 +684,7 @@ const EnvironmentPage = ({ data }) => (
     <View style={{ gap: 30 }}>
       <View style={{ alignItems: 'center' }}>
         <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>CARBON DIOXIDE OFFSET</Text>
-        <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#1a7f7f' }}>
+        <Text style={{ fontSize: 32, fontWeight: 'bold', color: '#02746A' }}>
           {data.envImpact.co2Offset.toLocaleString()} Metric Tons
         </Text>
       </View>

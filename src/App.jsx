@@ -127,10 +127,10 @@ const calculateFinancials = (capacity, plantCost, annualGeneration, isLoanEnable
   const comparisonData = [];
   let balance = -netCost; // Start with negative investment
 
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 25; i++) {
     balance += annualSavings; // Add yearly savings
     comparisonData.push({
-       year: `${i}yr YEAR`,
+       year: `Year ${i}`,
        savings: Math.round(balance)
     });
   }
@@ -641,7 +641,7 @@ const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) 
       </div>
 
       {/* ROI Chart */}
-<div className="h-[700px] w-full" ref={roiChartRef} style={{ backgroundColor: '#1a7f7f', padding: '10px', borderRadius: '8px' }}>
+<div className="h-[1540px] w-full" ref={roiChartRef} style={{ backgroundColor: '#02746A', paddingTop: '10px', paddingLeft: '10px', paddingBottom: '10px', paddingRight: '0px', borderRadius: '8px' }}>
   <ResponsiveContainer width="100%" height="100%">
     {(() => {
       // 1️⃣ Find max value in LAKHS
@@ -668,7 +668,7 @@ const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) 
       return (
         <ComposedChart
           data={financials.comparisonData}
-          margin={{ top: 10, right: 30, left: 10, bottom: 60 }}
+          margin={{ top: 30, right: 10, left: 20, bottom: 20 }}
         >
           <CartesianGrid stroke="#000000" strokeWidth={0.5} vertical={false} />
 
@@ -678,9 +678,14 @@ const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) 
             tickLine={false}
             angle={-90}
             textAnchor="end"
-            height={80}
+            height={130}
             interval={0}
-            tick={{ fill: '#000000', fontSize: 14, fontWeight: 'bold' }}
+            tick={{ 
+              fill: '#000000', 
+              fontSize: 32, 
+              fontWeight: 'bold',
+              fontFamily: 'Arial Narrow, Roboto Condensed, sans-serif-condensed'
+            }}
           />
 
           <YAxis
@@ -690,8 +695,18 @@ const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) 
             ticks={yTicks}
             domain={[0, yAxisMaxInLakhs * 100000]}
             allowDecimals={false}
-            tickFormatter={(value) => `${Math.round(Math.abs(value/100000))}`}
-            tick={{ fill: '#000000', fontSize: 15, fontWeight: 'bold' }}
+            tickFormatter={(value) => {
+              const lakhs = Math.round(Math.abs(value/100000));
+              return lakhs === 0 ? '₹0' : `₹${lakhs}.0L`;
+            }}
+            tick={{ 
+              fill: '#000000', 
+              fontSize: 30, 
+              fontWeight: 'bold', 
+              dx: 10,
+              fontFamily: 'Arial Narrow, Roboto Condensed, sans-serif-condensed'
+            }}
+            width={90}
           />
 
           <Tooltip formatter={(value) => [`₹${value.toLocaleString()}`, value >= 0 ? 'Profit' : 'Investment Balance']} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#ffffff' }} />
@@ -702,8 +717,8 @@ const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) 
             dataKey="savings"
             name="ROI Balance"
             fill="#E8E8E8"
-            barSize={28}
-            radius={[4, 4, 4, 4]}
+            barSize={25}
+            radius={[14, 14, 0, 0]}
           />
         </ComposedChart>
       );
@@ -819,7 +834,7 @@ export default function App() {
   const handleGeneratePDF = async (roiChartRef, generationChartRef) => {
     try {
       // Wait a bit to ensure charts are fully rendered
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Hide all tooltips before capturing
       const tooltips = document.querySelectorAll('.recharts-tooltip-wrapper');
