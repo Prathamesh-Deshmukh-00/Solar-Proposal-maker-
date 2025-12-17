@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image, Svg, Path, G, Polygon, Line, Circle } from '@react-pdf/renderer';
 import { images } from '../utils/imageAssets';
 
 // PDF Styles
@@ -544,64 +544,180 @@ const ComponentsPage = ({ data }) => {
 };
 
 // Timeline Page
-const TimelinePage = ({ data }) => (
-  <Page size="A4" style={styles.page}>
-    <View style={styles.header}>
-      <Text style={{ fontSize: 12, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
-      <Image src={images.logo.reslink} style={styles.logoImage} />
-    </View>
+const TimelinePage = ({ data }) => {
+  const steps = [
+    { step: 1, name: 'Permitting', desc: 'Permitting would be done within a week', duration: '1 week', color: '#02746A', textColor: '#FFFFFF', icon: images.timeline.permitting },
+    { step: 2, name: 'Procurement', desc: 'It takes time from around 1-2 weeks', duration: '1-2 weeks', color: '#FFFFFF', textColor: '#000000', icon: images.timeline.procurement },
+    { step: 3, name: 'Installation', desc: 'Installation takes 2-4 week time', duration: '2-4 weeks', color: '#000000', textColor: '#FFFFFF', icon: images.timeline.installation },
+    { step: 4, name: 'Site Assessment', desc: 'The Site Assessment takes 2-4 weeks', duration: '2-4 weeks', color: '#02746A', textColor: '#FFFFFF', icon: images.timeline.siteAssessment },
+    { step: 5, name: 'Electrical', desc: 'The electrical work is wrapped up to the 4th week', duration: '4th week', color: '#FFFFFF', textColor: '#000000', icon: images.timeline.electrical },
+    { step: 6, name: 'Commissioning', desc: 'The commissioning will be completed upto 6th week', duration: '6th week', color: '#000000', textColor: '#FFFFFF', icon: images.timeline.commissioning }
+  ];
 
-    <Text style={styles.sectionTitle}>TIMELINE</Text>
-    <Text style={[styles.subtitle, { marginBottom: 20 }]}>TIMELINE AND MILESTONES</Text>
-
-    <View style={{ marginBottom: 30 }}>
-      {[
-        { step: 1, name: 'Permitting', duration: '1 week' },
-        { step: 2, name: 'Procurement', duration: '2 weeks' },
-        { step: 3, name: 'Installation', duration: '2-4 weeks' },
-        { step: 4, name: 'Site Assessment', duration: '2-3 weeks' },
-        { step: 5, name: 'Electrical', duration: '4th week' },
-        { step: 6, name: 'Commissioning', duration: '6th week' }
-      ].map((item) => (
-        <View key={item.step} style={{ flexDirection: 'row', marginBottom: 10, alignItems: 'center' }}>
-          <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: item.step === 3 ? '#1a1a2e' : '#02746A', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
-            <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }}>{item.step}</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 12, fontWeight: 'bold' }}>{item.name}</Text>
-            <Text style={{ fontSize: 10, color: '#64748b' }}>{item.duration}</Text>
-          </View>
+  return (
+    <Page size="A4" style={styles.page}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
+        <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+          <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
+            {data.formData.companyInfo.brandName}
+          </Text>
         </View>
-      ))}
-    </View>
+      </View>
 
-    <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 15 }}>SYSTEM SPECIFICATION</Text>
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-      {[
-        `${data.formData.capacity}KW OF CAPACITY`,
-        'HDGI STRUCTURE',
-        'GRID TIED INVERTER',
-        'ONGRID SYSTEM'
-      ].map((spec, index) => (
-        <View key={index} style={{ flex: '0 0 48%', padding: 15, border: '1px solid #e2e8f0', borderRadius: 4 }}>
-          <Text style={{ fontSize: 11, fontWeight: 'bold', textAlign: 'center' }}>{spec}</Text>
+      <Text style={[styles.sectionTitle, { fontSize: 40, fontWeight: 'normal', marginTop: 20, marginBottom: 20 }]}>TIMELINE</Text>
+      <Text style={[styles.subtitle, { fontSize: 18, color: '#000000', fontWeight: 'light', marginTop: 10, marginBottom: 20 }]}>TIMELINE AND MILESTONES</Text>
+
+      {/* Timeline Visualization */}
+      <View style={{ marginBottom: 5, position: 'relative', height: 180, justifyContent: 'center' }}>
+        {/* Connecting Line */}
+        <View style={{ position: 'absolute', top: 90, left: 30, right: 30, height: 2, backgroundColor: '#cbd5e1' }} />
+        
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
+          {steps.map((item, index) => {
+            const isOdd = (index + 1) % 2 !== 0; // 1, 3, 5 -> Top Content
+            // Step 1, 3, 5: Content Top, Hexagon Bottom (on line)
+            // Step 2, 4, 6: Hexagon Top (on line), Content Bottom
+
+            return (
+              <View key={item.step} style={{ alignItems: 'center', width: 80 }}>
+                
+                {/* Top Section */}
+                <View style={{ height: 80, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 5 }}>
+                  {isOdd && (
+                    <>
+                      <Image src={item.icon} style={{ width: 24, height: 24, marginBottom: 5, objectFit: 'contain' }} />
+                      <Text style={{ fontSize: 9, fontWeight: 'bold', textAlign: 'center' }}>{item.name}</Text>
+                      <Text style={{ fontSize: 7, color: '#64748b', textAlign: 'center', marginTop: 2 }}>{item.desc}</Text>
+                    </>
+                  )}
+                </View>
+
+                {/* Hexagon Marker */}
+                <View style={{ height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                  <Svg height="30" width="80" viewBox="0 0 100 30">
+                    <Polygon
+                      points="10,15 20,0 80,0 90,15 80,30 20,30"
+                      fill={item.color}
+                      stroke={item.color === '#FFFFFF' ? '#e2e8f0' : 'none'}
+                      strokeWidth={1}
+                    />
+                  </Svg>
+                  <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 8, color: item.textColor, fontWeight: 'bold' }}>STEP 0{item.step}</Text>
+                  </View>
+                </View>
+
+                {/* Bottom Section */}
+                <View style={{ height: 80, justifyContent: 'flex-start', alignItems: 'center', marginTop: 5 }}>
+                  {!isOdd && (
+                    <>
+                      <Image src={item.icon} style={{ width: 24, height: 24, marginBottom: 5, objectFit: 'contain' }} />
+                      <Text style={{ fontSize: 9, fontWeight: 'bold', textAlign: 'center' }}>{item.name}</Text>
+                      <Text style={{ fontSize: 7, color: '#64748b', textAlign: 'center', marginTop: 2 }}>{item.desc}</Text>
+                    </>
+                  )}
+                </View>
+                
+              </View>
+            );
+          })}
         </View>
-      ))}
-    </View>
+      </View>
 
-    <View style={{ marginTop: 20 }}>
-      <Text style={{ fontSize: 9, color: '#64748b', fontStyle: 'italic' }}>
-        Net metering is entirely dependent on DISCOM, we don't control their process
-      </Text>
-    </View>
+      <Text style={{ fontSize: 18, fontWeight: 'normal', color: '#000000', textTransform: 'uppercase' }}>SYSTEM SPECIFICATION</Text>
+      
+      {/* System Specifications Diagram */}
+      <View style={{ height: 300, position: 'relative', marginTop: 0 }}>
+        
+        {/* Connecting Lines (Manual SVG Paths) */}
+        <Svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+          {/* Top Left Connection */}
+          <Path d="M 160 80 Q 200 80 200 130" stroke="#000" strokeWidth={1.5} fill="none" />
+           <Circle cx="200" cy="130" r="3" fill="#000" />
+           <Circle cx="160" cy="80" r="3" fill="#000" />
 
-    <View style={styles.footer}>
-      <Text>{data.formData.capacity}kW Ongrid proposal</Text>
-      <Text>PAGE 6</Text>
-      <Text>Generated by Reslink</Text>
-    </View>
-  </Page>
-);
+          {/* Bottom Left Connection */}
+          <Path d="M 160 220 Q 200 220 200 170" stroke="#000" strokeWidth={1.5} fill="none" />
+          <Circle cx="200" cy="170" r="3" fill="#000" />
+          <Circle cx="160" cy="220" r="3" fill="#000" />
+
+          {/* Top Right Connection */}
+          <Path d="M 370 80 Q 330 80 330 130" stroke="#000" strokeWidth={1.5} fill="none" />
+          <Circle cx="330" cy="130" r="3" fill="#000" />
+          <Circle cx="370" cy="80" r="3" fill="#000" />
+
+          {/* Bottom Right Connection */}
+          <Path d="M 370 220 Q 330 220 330 170" stroke="#000" strokeWidth={1.5} fill="none" />
+          <Circle cx="330" cy="170" r="3" fill="#000" />
+          <Circle cx="370" cy="220" r="3" fill="#000" />
+        </Svg>
+
+        {/* Central Box */}
+        <View style={{ 
+          position: 'absolute', 
+          top: 120, 
+          left: '35%', 
+          width: '30%', 
+          height: 60, 
+          backgroundColor: '#000000', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          zIndex: 10
+        }}>
+          <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }}>SYSTEM</Text>
+          <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }}>SPECIFICATION</Text>
+        </View>
+
+        {/* Top Left Box: Capacity */}
+        <View style={{ position: 'absolute', top: 30, left: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+             <Image src={images.specs.capacity} style={{ width: 30, height: 30, marginBottom: 5 }} />
+             <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>{data.formData.capacity}KW OF{'\n'}CAPACITY</Text>
+        </View>
+
+        {/* Bottom Left Box: Structure */}
+        <View style={{ position: 'absolute', top: 180, left: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+             <Image src={images.specs.structure} style={{ width: 30, height: 30, marginBottom: 5 }} />
+             <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>HDGI{'\n'}STRUCTURE</Text>
+        </View>
+
+        {/* Top Right Box: Inverter */}
+        <View style={{ position: 'absolute', top: 30, right: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+             <Image src={images.specs.inverter} style={{ width: 30, height: 30, marginBottom: 5 }} />
+             <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>GRID TIED{'\n'}INVERTER</Text>
+        </View>
+
+        {/* Bottom Right Box: Ongrid System */}
+        <View style={{ position: 'absolute', top: 180, right: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+             <Image src={images.specs.ongrid} style={{ width: 30, height: 30, marginBottom: 5 }} />
+             <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>ONGRID{'\n'}SYSTEM</Text>
+        </View>
+
+      </View>
+
+      <View style={{ marginTop: 20, alignItems: 'center' }}>
+        <Text style={{ fontSize: 9, color: '#64748b', fontStyle: 'italic' }}>
+          Net metering is entirely dependent on DISCOM, we don't control that process
+        </Text>
+      </View>
+
+      <View style={[styles.footer, { 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        paddingHorizontal: 30,
+        paddingVertical: 15,
+        borderTop: '1px solid #e5e7eb',
+        marginTop: 20
+      }]}>
+        <Text style={{ fontSize: 9 }}>{data.formData.capacity}kW Ongrid proposal</Text>
+        <Text style={{ fontSize: 9 }}>PAGE 6</Text>
+        <Text style={{ fontSize: 9 }}>Generated by Reslink</Text>
+      </View>
+    </Page>
+  );
+};
 
 // Offer & Terms Page
 const OfferTermsPage = ({ data }) => (

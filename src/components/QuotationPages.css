@@ -343,7 +343,7 @@
 }
 
 .roi-page {
-    background: #1a7f7f;
+    background: #02746A;
     color: white;
 }
 
@@ -411,7 +411,7 @@
 .metric-box-value {
     font-size: 20px;
     font-weight: bold;
-    color: #1a7f7f;
+    color: #02746A;
 }
 
 .financing-banner {
@@ -449,7 +449,7 @@
 .performance-value {
     font-size: 32px;
     font-weight: bold;
-    color: #1a7f7f;
+    color: #02746A;
 }
 
 .performance-label {
@@ -516,7 +516,7 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: #1a7f7f;
+    background: #02746A;
     color: white;
     display: flex;
     align-items: center;
@@ -577,7 +577,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #1a7f7f;
+    background: #02746A;
     color: white;
     display: inline-flex;
     align-items: center;
@@ -626,7 +626,7 @@
 }
 
 .env-metric-value.teal {
-    color: #1a7f7f;
+    color: #02746A;
 }
 
 .env-metric-value.green {
