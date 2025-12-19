@@ -20,6 +20,28 @@ import cubeLogo from '../assets/Images/Cube logo.png'; // HDGI Structure
 import chargingAdapter from '../assets/Images/Charging addepter logo.png'; // Inverter
 import gearLogo from '../assets/Images/Gare logo.png'; // Ongrid system fallback or specific
 
+import panelIcon from '../assets/Images/Panal.png';
+import inverterIcon from '../assets/Images/Inverter_ logo.png';
+import cableIcon from '../assets/Images/Cable.png';
+import structureIcon from '../assets/Images/SolarStructure.png';
+import electricalComponentIcon from '../assets/Images/Electrical_Component.png';
+import servicesIcon from '../assets/Images/Services_Logo.png';
+
+import waareeLogo from '../assets/Images/Waaree Logo.jpg';
+import sungrowLogo from '../assets/Images/sungrow_asia_pacific_logo.jpg';
+import polycabLogo from '../assets/Images/Polycab logo.png';
+
+import truePowerLogo from '../assets/Images/TruPower Logo.jpg';
+import sgPowerLogo from '../assets/Images/SG_PowerLogo.png';
+
+// Environment Impact Icons
+import co2Icon from '../assets/Images/CO2 logo.png';
+import treeIcon from '../assets/Images/Tree Logo.png';
+import fireIcon from '../assets/Images/Fire Logo.png';
+
+// Thank You Page
+import thankYouImage from '../assets/Images/Solar Panels Image.png';
+
 export const images = {
     hero: {
         windTurbines: windTurbinesHero,
@@ -42,6 +64,28 @@ export const images = {
         structure: cubeLogo,
         inverter: chargingAdapter,
         ongrid: tealGearLogo // Reusing gear for system or could use Gare logo
+    },
+    components: {
+        panel: panelIcon,
+        inverter: inverterIcon,
+        cable: cableIcon,
+        structure: structureIcon,
+        electrical: electricalComponentIcon,
+        services: servicesIcon
+    },
+    brands: {
+        waaree: waareeLogo,
+        sungrow: sungrowLogo,
+        polycab: polycabLogo,
+        truePower: truePowerLogo,
+        sgPower: sgPowerLogo
+    },
+    environment: {
+        co2: co2Icon,
+        tree: treeIcon,
+        fire: fireIcon
+    },
+    thankYou: {
+        hero: thankYouImage
     }
 };
-
