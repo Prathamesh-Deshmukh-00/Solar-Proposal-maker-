@@ -5,24 +5,24 @@
  * Default company information
  */
 export const DEFAULT_COMPANY_INFO = {
-    name: 'Reslink Technologies Pvt. Ltd.',
-    brandName: 'RESLINK ENERGY',
+    name: 'Aditya Solar Energy Pvt. Ltd.',
+    brandName: 'Aditya Solar Energy ',
     presenterName: 'Aditya Deshmukh',
-    totalCapacity: '45Mw',
+    totalCapacity: '0Mw',
     totalCapacityLabel: 'Total capacity installed',
-    happyCustomers: '350+',
+    happyCustomers: '0+',
     happyCustomersLabel: 'Happy customers',
     cities: '10+',
     citiesLabel: 'Cities',
     missionStatement: 'We are on a mission to deliver 10,000 world-class solar installations ensuring maximum performance, durability, and ROI for every project.',
     contact: {
-        phone: '9560523752',
-        email: 'team@reslink.org',
-        website: 'www.reslink.ai',
-        address: '4A,Hauz Khas, New-Delhi, 110049'
+        phone: '9284287565',
+        email: 'adityasolarservices01@gmail.com',
+        website: 'https://aditya-solar-energy.vercel.app/',
+        address: 'Old city Telhara ,Akola , Maharashtra ( 444108 ) '
     },
     footer: {
-        amcNote: 'Each site is installed by Reslink Team end to end with 5 years of AMC & monitoring'
+        amcNote: `Each site is installed by Reslink Team end to end with 5 years of AMC & monitoring`
     }
 };
 
@@ -131,4 +131,37 @@ export const DISCLAIMERS = {
     panels: 'All panels are checked before delivery',
     inverters: 'We are using grid tied ongrid inverters',
     structure: 'Our all structures are hot-diped GI'
+};
+
+/**
+ * Default system details for the quotation form
+ */
+export const DEFAULT_SYSTEM_DETAILS = {
+    panels: {
+        capacity: 550,
+        technology: 'TOPCon',
+        company: 'Waaree Energies',
+        type: 'Bifacial'
+    },
+    inverter: {
+        capacity: '5kw',
+        type: 'Ongrid',
+        warranty: '5 years',
+        company: 'Growatt'
+    },
+    structure: {
+        material: 'HDGI (Hot-Dip Galvanized Iron)',
+        legHeightFront: '5 feet',
+        legHeightBack: '8 feet',
+        dimensionsLabel: 'Leg: C 150x70x15x2 mm\nRafter: C 90X40X15X1.6 MM',
+        nutBolt: true,
+        pathway: true,
+        cChannel: true
+    },
+    electrical: {
+        acdbDcdb: 'Polycab',
+        earthing: 'SG Power',
+        mc4: 'True Power',
+        cableSize: '4sq mm'
+    }
 };

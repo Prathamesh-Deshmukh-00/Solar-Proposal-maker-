@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
 });
 
 // Cover Page Component
-const CoverPage = ({ data }) => {
+const CoverPage = ({ data, logo }) => {
   const currentDate = new Date().toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
@@ -173,12 +173,12 @@ const CoverPage = ({ data }) => {
       <View style={{ flexDirection: 'row', padding: 30, paddingTop: 40, paddingBottom: 30 }}>
         <View style={{ flex: 1, paddingRight: 20 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15, marginLeft: -25 }}>
-            <Image src={images.logo.company} style={{ width: 100, height: 25, objectFit: 'contain' }} />
+            <Image src={logo} style={{ width: 100, height: 25, objectFit: 'contain' }} />
             <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -20 }}>
               {data.formData.companyInfo.brandName}
             </Text>
           </View>
-          <Text style={{ fontSize: 11, marginBottom: 20 }}>Reslink Technologies Pvt. Ltd.</Text>
+          <Text style={{ fontSize: 11, marginBottom: 20 }}>{data.formData.companyInfo.name}</Text>
           <Text style={{ fontSize: 10 }}>Proposal no {data.formData.proposalNumber}</Text>
         </View>
 
@@ -222,20 +222,20 @@ const CoverPage = ({ data }) => {
 };
 
 // About Reslink Page
-const AboutReslinkPage = ({ data }) => (
+const AboutReslinkPage = ({ data, logo }) => (
   <Page size="A4" style={styles.page}>
     {/* Modern Header with Logo and Branding */}
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
       <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+        <Image src={logo} style={{ width: 60, height: 15, objectFit: 'contain' }} />
         <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
           {data.formData.companyInfo.brandName}
         </Text>
       </View>
     </View>
 
-    <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 15, letterSpacing: 0.5 }}>ABOUT RESLINK</Text>
+    <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 15, letterSpacing: 0.5, textTransform: 'uppercase' }}>ABOUT {data.formData.companyInfo.brandName}</Text>
     <Text style={{ fontSize: 11, lineHeight: 1.6, color: '#334155', marginBottom: 25 }}>{data.formData.companyInfo.missionStatement}</Text>
 
     <View style={{ flexDirection: 'row', gap: 15, marginBottom: 25 }}>
@@ -281,7 +281,7 @@ const AboutReslinkPage = ({ data }) => (
 );
 
 // Generation Page
-const GenerationPage = ({ data }) => {
+const GenerationPage = ({ data, logo }) => {
   const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
   
   return (
@@ -290,7 +290,7 @@ const GenerationPage = ({ data }) => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+          <Image src={logo} style={{ width: 60, height: 15, objectFit: 'contain' }} />
           <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
             {data.formData.companyInfo.brandName}
           </Text>
@@ -387,7 +387,7 @@ const GenerationPage = ({ data }) => {
 };
 
 // ROI Summary Page
-const ROIPage = ({ data }) => (
+const ROIPage = ({ data, logo }) => (
   <Page size="A4" style={styles.roiPage}>
     <View style={{ marginBottom: 15 }}>
       <Text style={{ fontSize: 11, color: '#FFFFFF', letterSpacing: 0.3 }}>{data.formData.capacity}kW Ongrid Proposal</Text>
@@ -482,14 +482,42 @@ const ROIPage = ({ data }) => (
 );
 
 // Components Page
-const ComponentsPage = ({ data }) => {
+const ComponentsPage = ({ data, logo }) => {
+  const { systemDetails } = data.formData;
+
+  // Helper to get Panel Warranty string based on technology
+  const getPanelWarranty = (tech) => {
+    if (tech && tech.toLowerCase().includes('topcon')) {
+      return '12 years (product), 30 years (performance)';
+    }
+    return '10 years (product), 25 years (performance)';
+  };
+
+  // Helper to get Structure Description string
+  const getStructureDescription = (material, pathway, cChannel, nutBolt) => {
+    let baseDesc = '';
+    const mat = material || '';
+    if (mat.includes('GI (Galvanized Iron)') || mat.includes('HDGI (Hot-Dip Galvanized Iron)')) {
+       baseDesc = 'Hot Dip GI (C channel) structure with >80 microns zinc coating';
+    } else {
+       baseDesc = `${mat} structure with high quality`;
+    }
+    
+    let suffix = '';
+    if (nutBolt) suffix += ', nut-bolted structure';
+    if (pathway) suffix += ', with pathway';
+    if (cChannel) suffix += ' and C-Channel';
+    
+    return baseDesc + suffix;
+  };
+
   return (
     <Page size="A4" style={styles.page}>
       {/* Header */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+          <Image src={logo} style={{ width: 60, height: 15, objectFit: 'contain' }} />
           <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
             {data.formData.companyInfo.brandName}
           </Text>
@@ -519,18 +547,19 @@ const ComponentsPage = ({ data }) => {
                <Image src={images.components.panel} style={{ width: 20, height: 20, marginRight: 5, objectFit: 'contain' }} />
                <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Panel</Text>
             </View>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Watt Peak:</Text> 585-615</Text>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Type:</Text> Bifacial</Text>
-            <Text style={{ fontSize: 8, color: '#64748b' }}>10 years (product), 25 years (performance)</Text>
+            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Watt Peak:</Text> {systemDetails.panels.capacity} Wp</Text>
+            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Type:</Text> {systemDetails.panels.type}</Text>
+            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Tech:</Text> {systemDetails.panels.technology}</Text>
+            <Text style={{ fontSize: 8, color: '#64748b' }}>{getPanelWarranty(systemDetails.panels.technology)}</Text>
           </View>
           {/* Brand */}
           <View style={{ flex: 12, padding: 10, borderRight: '1px solid #cbd5e1', justifyContent: 'center', alignItems: 'center' }}>
             <Image src={images.brands.waaree} style={{ width: 60, height: 20, objectFit: 'contain', marginBottom: 5 }} />
-            <Text style={{ fontSize: 9, color: '#64748b' }}>Waaree Group</Text>
+            <Text style={{ fontSize: 9, color: '#64748b', textAlign: 'center' }}>{systemDetails.panels.company}</Text>
           </View>
           {/* Description */}
           <View style={{ flex: 15, padding: 10, justifyContent: 'center' }}>
-            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>Bifacial High Wattage solar panels, with 25 years of warranty</Text>
+            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>{systemDetails.panels.type} High Wattage {systemDetails.panels.technology} solar panels, with 25 years of warranty</Text>
           </View>
         </View>
 
@@ -541,16 +570,16 @@ const ComponentsPage = ({ data }) => {
                <Image src={images.components.inverter} style={{ width: 20, height: 20, marginRight: 5, objectFit: 'contain' }} />
                <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Inverter</Text>
             </View>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Capacity:</Text> {data.formData.capacity} kW design</Text>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Type:</Text> On-Grid</Text>
-            <Text style={{ fontSize: 9, color: '#0284c7', fontWeight: 'bold' }}>Warranty: <Text style={{ color: '#000000', fontWeight: 'normal' }}>10 years</Text></Text>
+            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Capacity:</Text> {systemDetails.inverter.capacity}</Text>
+            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Type:</Text> {systemDetails.inverter.type}</Text>
+            <Text style={{ fontSize: 9, color: '#0284c7', fontWeight: 'bold' }}>Warranty: <Text style={{ color: '#000000', fontWeight: 'normal' }}>{systemDetails.inverter.warranty}</Text></Text>
           </View>
           <View style={{ flex: 12, padding: 10, borderRight: '1px solid #cbd5e1', justifyContent: 'center', alignItems: 'center' }}>
              <Image src={images.brands.sungrow} style={{ width: 60, height: 30, objectFit: 'contain', marginBottom: 5 }} />
-             <Text style={{ fontSize: 9, color: '#64748b' }}>Sungrow</Text>
+             <Text style={{ fontSize: 9, color: '#64748b', textAlign: 'center' }}>{systemDetails.inverter.company}</Text>
           </View>
           <View style={{ flex: 15, padding: 10, justifyContent: 'center' }}>
-            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>Sungrow {data.formData.capacity}kw inverter, with all protection features, and anti-islanding support</Text>
+            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>{systemDetails.inverter.company} {systemDetails.inverter.capacity} inverter, with all protection features, and anti-islanding support</Text>
           </View>
         </View>
 
@@ -561,16 +590,15 @@ const ComponentsPage = ({ data }) => {
                <Image src={images.components.cable} style={{ width: 20, height: 20, marginRight: 5, objectFit: 'contain' }} />
                <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Cable</Text>
             </View>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Type:</Text> DC/AC Cables</Text>
+            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Type:</Text> DC/AC Cables ({systemDetails.electrical.cableSize})</Text>
             <Text style={{ fontSize: 9, marginBottom: 2 }}>double insulated cables</Text>
-            <Text style={{ fontSize: 9, color: '#0284c7', fontWeight: 'bold', marginTop: 5 }}>Warranty: <Text style={{ color: '#000000', fontWeight: 'normal' }}>30 years</Text></Text>
           </View>
           <View style={{ flex: 12, padding: 10, borderRight: '1px solid #cbd5e1', justifyContent: 'center', alignItems: 'center' }}>
              <Image src={images.brands.polycab} style={{ width: 60, height: 20, objectFit: 'contain', marginBottom: 5 }} />
              <Text style={{ fontSize: 9, color: '#64748b' }}>Polycab</Text>
           </View>
           <View style={{ flex: 15, padding: 10, justifyContent: 'center' }}>
-            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>Polycab U/V resistant, long lasting cables</Text>
+            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>Polycab U/V resistant, {systemDetails.electrical.cableSize} long lasting cables</Text>
           </View>
         </View>
 
@@ -581,16 +609,19 @@ const ComponentsPage = ({ data }) => {
                <Image src={images.components.structure} style={{ width: 20, height: 20, marginRight: 5, objectFit: 'contain' }} />
                <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Structure</Text>
             </View>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Leg:</Text> C 150x70x15x2 mm</Text>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Rafter:</Text> C 90X40X15X1.6 MM</Text>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Height:</Text> Front 8 / Back 6</Text>
-            <Text style={{ fontSize: 9, marginBottom: 2 }}>SS bolts for nut</Text>
+            <View style={{ marginBottom: 5 }}>
+                {systemDetails.structure.dimensionsLabel.split('\n').map((line, i) => (
+                    <Text key={i} style={{ fontSize: 9, marginBottom: 1 }}>{line}</Text>
+                ))}
+            </View>
+            <Text style={{ fontSize: 9, marginBottom: 2 }}><Text style={{ fontWeight: 'bold' }}>Height:</Text> Front {systemDetails.structure.legHeightFront} / Back {systemDetails.structure.legHeightBack}</Text>
+            {systemDetails.structure.nutBolt && <Text style={{ fontSize: 9, marginBottom: 2 }}>SS bolts for nut</Text>}
           </View>
           <View style={{ flex: 12, padding: 10, borderRight: '1px solid #cbd5e1', justifyContent: 'center', alignItems: 'center' }}>
-             <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#64748b' }}>HDGI</Text>
+             <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#64748b', textAlign: 'center' }}>{systemDetails.structure.material}</Text>
           </View>
           <View style={{ flex: 15, padding: 10, justifyContent: 'center' }}>
-            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>Hot Dip GI (C channel) structure with {'>'}80 microns zinc coating, nut-bolted structure with pathway</Text>
+            <Text style={{ fontSize: 9, lineHeight: 1.3 }}>{getStructureDescription(systemDetails.structure.material, systemDetails.structure.pathway, systemDetails.structure.cChannel, systemDetails.structure.nutBolt)}</Text>
           </View>
         </View>
 
@@ -615,17 +646,17 @@ const ComponentsPage = ({ data }) => {
              {/* ACDB/DCDB */}
              <View style={{ alignItems: 'center', marginBottom: 10 }}>
                <Image src={images.brands.polycab} style={{ width: 40, height: 18, marginBottom: 2 }} />
-               <Text style={{ fontSize: 8, color: '#64748b' }}>Polycab</Text>
+               <Text style={{ fontSize: 8, color: '#64748b', textAlign: 'center' }}>{systemDetails.electrical.acdbDcdb}</Text>
              </View>
              {/* MC4 */}
              <View style={{ alignItems: 'center', marginBottom: 10 }}>
                <Image src={images.brands.truePower} style={{ width: 40, height: 18, marginBottom: 2 }} />
-               <Text style={{ fontSize: 8, color: '#64748b' }}>True Power</Text>
+               <Text style={{ fontSize: 8, color: '#64748b', textAlign: 'center' }}>{systemDetails.electrical.mc4}</Text>
              </View>
              {/* Earthing */}
              <View style={{ alignItems: 'center' }}>
                <Image src={images.brands.sgPower} style={{ width: 40, height: 18, marginBottom: 2 }} />
-               <Text style={{ fontSize: 8, color: '#64748b' }}>SG Power</Text>
+               <Text style={{ fontSize: 8, color: '#64748b', textAlign: 'center' }}>{systemDetails.electrical.earthing}</Text>
              </View>
           </View>
 
@@ -636,10 +667,10 @@ const ComponentsPage = ({ data }) => {
                 <Text style={{ fontSize: 9 }}>ACDB: With MCB, RCCB & SPD</Text>
             </View>
             <View style={{ marginBottom: 12 }}>
-                <Text style={{ fontSize: 9 }}>MC4 Connectors of True Power brand</Text>
+                <Text style={{ fontSize: 9 }}>MC4 Connectors of {systemDetails.electrical.mc4} brand</Text>
             </View>
             <View>
-                <Text style={{ fontSize: 9 }}>LA of 1.5 m, 3 earthing rods & 15 kg chemical bag</Text>
+                <Text style={{ fontSize: 9 }}>{systemDetails.electrical.earthing} LA of 1.5 m, 3 earthing rods & chemical bag</Text>
             </View>
           </View>
         </View>
@@ -656,7 +687,7 @@ const ComponentsPage = ({ data }) => {
             <Text style={{ fontSize: 8, color: '#64748b' }}>Ongoing generation tracking</Text>
           </View>
           <View style={{ flex: 12, padding: 10, borderRight: '1px solid #cbd5e1', justifyContent: 'center', alignItems: 'center' }}>
-             <Image src={images.logo.company} style={{ width: 60, height: 20, objectFit: 'contain', marginBottom: 5 }} />
+             <Image src={logo} style={{ width: 60, height: 20, objectFit: 'contain', marginBottom: 5 }} />
              <Text style={{ fontSize: 9, color: '#64748b' }}>{data.formData.companyInfo.brandName}</Text>
           </View>
           <View style={{ flex: 15, padding: 10, justifyContent: 'center' }}>
@@ -676,7 +707,7 @@ const ComponentsPage = ({ data }) => {
         marginTop: 20
       }]}>
         <Text style={{ fontSize: 9 }}>{data.formData.capacity}kW Ongrid proposal</Text>
-        <Text style={{ fontSize: 9 }}>PAGE 5</Text>
+        <Text style={{ fontSize: 9 }}>PAGE 6</Text>
         <Text style={{ fontSize: 9 }}>Generated by {data.formData.companyInfo.name}</Text>
       </View>
     </Page>
@@ -684,7 +715,7 @@ const ComponentsPage = ({ data }) => {
 };
 
 // Timeline Page
-const TimelinePage = ({ data }) => {
+const TimelinePage = ({ data, logo }) => {
   const steps = [
     { step: 1, name: 'Permitting', desc: 'Permitting would be done within a week', duration: '1 week', color: '#02746A', textColor: '#FFFFFF', icon: images.timeline.permitting },
     { step: 2, name: 'Procurement', desc: 'It takes time from around 1-2 weeks', duration: '1-2 weeks', color: '#FFFFFF', textColor: '#000000', icon: images.timeline.procurement },
@@ -699,7 +730,7 @@ const TimelinePage = ({ data }) => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+          <Image src={logo} style={{ width: 60, height: 15, objectFit: 'contain' }} />
           <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
             {data.formData.companyInfo.brandName}
           </Text>
@@ -852,7 +883,7 @@ const TimelinePage = ({ data }) => {
         marginTop: 20
       }]}>
         <Text style={{ fontSize: 9 }}>{data.formData.capacity}kW Ongrid proposal</Text>
-        <Text style={{ fontSize: 9 }}>PAGE 6</Text>
+        <Text style={{ fontSize: 9 }}>PAGE 5</Text>
         <Text style={{ fontSize: 9 }}>Generated by Reslink</Text>
       </View>
     </Page>
@@ -860,12 +891,22 @@ const TimelinePage = ({ data }) => {
 };
 
 // Offer & Terms Page
-const OfferTermsPage = ({ data }) => {
-  const plantCost = parseInt(data.formData.plantCost) || 0;
-  const gstAmount = Math.round(plantCost * 0.089);
+const OfferTermsPage = ({ data, logo }) => {
+  const incomingCost = parseInt(data.formData.plantCost) || 0;
   const subsidyAmount = 78000; // Standard PM Surya Ghar subsidy
-  const discountAmount = 52000; // Matching image example
-  const finalCost = plantCost + gstAmount - subsidyAmount - discountAmount;
+  const discountAmount = 52000; // Fixed discount as per requirement
+  
+  // Calculation Flow:
+  // 1. Incoming - Discount = Payable (Amount user pays to us)
+  const payableAmount = incomingCost - discountAmount;
+  
+  // 2. Payable includes GST (8.9%). Extract GST.
+  // Payable = Base * 1.089 => Base = Payable / 1.089
+  const baseSystemCost = Math.round(payableAmount / 1.089);
+  const gstAmount = payableAmount - baseSystemCost;
+
+  // 3. Final Cost for customer after subsidy
+  const finalCost = payableAmount - subsidyAmount;
 
   return (
     <Page size="A4" style={styles.page}>
@@ -873,7 +914,7 @@ const OfferTermsPage = ({ data }) => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+          <Image src={logo} style={{ width: 60, height: 15, objectFit: 'contain' }} />
           <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
             {data.formData.companyInfo.brandName}
           </Text>
@@ -893,34 +934,42 @@ const OfferTermsPage = ({ data }) => {
           <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold' }}>Total</Text></View>
         </View>
 
-        {/* Rows */}
+        {/* System Cost (Incoming) */}
         <View style={{ flexDirection: 'row', borderBottom: '1px solid #e2e8f0', paddingVertical: 8, paddingHorizontal: 10 }}>
-          <View style={{ flex: 3 }}><Text style={{ fontSize: 10, color: '#334155' }}>Solar Installation</Text></View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>System Cost</Text></View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>Rs {plantCost.toLocaleString('en-IN')}</Text></View>
-        </View>
-
-        <View style={{ flexDirection: 'row', borderBottom: '1px solid #e2e8f0', paddingVertical: 8, paddingHorizontal: 10 }}>
-          <View style={{ flex: 3 }}><Text style={{ fontSize: 10, color: '#334155' }}>GST (8.9%)</Text></View>
+          <View style={{ flex: 3 }}><Text style={{ fontSize: 10, color: '#334155' }}>System Cost</Text></View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>Rs {incomingCost.toLocaleString('en-IN')}</Text></View>
           <View style={{ flex: 2, alignItems: 'flex-end' }}></View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>Rs {gstAmount.toLocaleString('en-IN')}</Text></View>
         </View>
 
+        {/* Discount */}
+        <View style={{ flexDirection: 'row', borderBottom: '1px solid #e2e8f0', paddingVertical: 8, paddingHorizontal: 10 }}>
+          <View style={{ flex: 3 }}><Text style={{ fontSize: 10, color: '#334155' }}>Discount (if any)</Text></View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>- Rs {discountAmount.toLocaleString('en-IN')}</Text></View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}></View>
+        </View>
+
+        {/* Payable Amount */}
+        <View style={{ flexDirection: 'row', borderBottom: '1px solid #e2e8f0', paddingVertical: 8, paddingHorizontal: 10, backgroundColor: '#f8fafc' }}>
+          <View style={{ flex: 3 }}>
+              <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000000' }}>Payable Amount</Text>
+              <Text style={{ fontSize: 7, color: '#64748b', marginTop: 2 }}>
+                  (including GST)
+              </Text>
+          </View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}></View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000000' }}>Rs {payableAmount.toLocaleString('en-IN')}</Text></View>
+        </View>
+
+        {/* Subsidy */}
         <View style={{ flexDirection: 'row', borderBottom: '1px solid #e2e8f0', paddingVertical: 8, paddingHorizontal: 10 }}>
           <View style={{ flex: 3 }}><Text style={{ fontSize: 10, color: '#334155' }}>Subsidy</Text></View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>- Rs {subsidyAmount.toLocaleString('en-IN')}</Text></View>
           <View style={{ flex: 2, alignItems: 'flex-end' }}></View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>Rs {subsidyAmount.toLocaleString('en-IN')}</Text></View>
-        </View>
-
-        <View style={{ flexDirection: 'row', borderBottom: '1px solid #e2e8f0', paddingVertical: 8, paddingHorizontal: 10 }}>
-          <View style={{ flex: 3 }}><Text style={{ fontSize: 10, color: '#334155' }}>Discount(if any)</Text></View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}></View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, color: '#334155' }}>Rs {discountAmount.toLocaleString('en-IN')}</Text></View>
         </View>
 
         {/* Final Cost */}
-        <View style={{ flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 10, borderBottom: '1px solid #cbd5e1' }}>
-          <View style={{ flex: 3 }}><Text style={{ fontSize: 11, fontWeight: 'bold' }}>Final Cost</Text></View>
+        <View style={{ flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 10, borderBottom: '1px solid #cbd5e1', backgroundColor: '#f1f5f9' }}>
+          <View style={{ flex: 3 }}><Text style={{ fontSize: 11, fontWeight: 'bold' }}>Final Cost <Text style={{ fontSize: 9, fontWeight: 'normal' }}>(after subsidy)</Text></Text></View>
           <View style={{ flex: 2, alignItems: 'flex-end' }}></View>
           <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 11, fontWeight: 'bold' }}>Rs {finalCost.toLocaleString('en-IN')}</Text></View>
         </View>
@@ -1043,7 +1092,7 @@ const OfferTermsPage = ({ data }) => {
 };
 
 // Environment Impact Page
-const EnvironmentPage = ({ data }) => {
+const EnvironmentPage = ({ data, logo }) => {
   const capacity = parseFloat(data.formData.capacity) || 0;
   
   // Calculation factors per 1kW (User provided)
@@ -1057,7 +1106,7 @@ const EnvironmentPage = ({ data }) => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+          <Image src={logo} style={{ width: 60, height: 15, objectFit: 'contain' }} />
           <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
             {data.formData.companyInfo.brandName}
           </Text>
@@ -1122,7 +1171,7 @@ const EnvironmentPage = ({ data }) => {
 };
 
 // Thank You Page
-const ThankYouPage = ({ data }) => {
+const ThankYouPage = ({ data, logo }) => {
   const contact = data.formData.companyInfo.contact || {};
   const branding = data.formData.companyInfo || {};
 
@@ -1132,7 +1181,7 @@ const ThankYouPage = ({ data }) => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <Text style={{ fontSize: 11, color: '#64748b' }}>{data.formData.capacity}kW Ongrid Proposal</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image src={images.logo.company} style={{ width: 60, height: 15, objectFit: 'contain' }} />
+          <Image src={logo} style={{ width: 60, height: 15, objectFit: 'contain' }} />
           <Text style={{ fontSize: 11, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -8 }}>
             {branding.brandName}
           </Text>
@@ -1227,14 +1276,14 @@ const ThankYouPage = ({ data }) => {
 // Main Quotation PDF Document
 export const QuotationPDF = ({ data }) => (
   <Document>
-    <CoverPage data={data} />
-    <AboutReslinkPage data={data} />
-    <GenerationPage data={data} />
-    <ROIPage data={data} />
-    <ComponentsPage data={data} />
-    <TimelinePage data={data} />
-    <OfferTermsPage data={data} />
-    <EnvironmentPage data={data} />
-    <ThankYouPage data={data} />
+    <CoverPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <AboutReslinkPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <GenerationPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <ROIPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <TimelinePage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <ComponentsPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <OfferTermsPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <EnvironmentPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
+    <ThankYouPage data={data} logo={data.formData.companyInfo.logo || images.logo.company} />
   </Document>
 );

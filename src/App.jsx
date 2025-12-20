@@ -46,7 +46,7 @@ import {
 } from './components/QuotationPages';
 import { convertChartToImage } from './utils/chartToImage';
 import { calculateEnvironmentalImpact } from './utils/environmentalCalculations';
-import { DEFAULT_COMPANY_INFO, DEFAULT_PANELS, DEFAULT_INVERTERS, DEFAULT_STRUCTURE } from './utils/defaults';
+import { DEFAULT_COMPANY_INFO, DEFAULT_PANELS, DEFAULT_INVERTERS, DEFAULT_STRUCTURE, DEFAULT_SYSTEM_DETAILS } from './utils/defaults';
 import { images } from './utils/imageAssets';
 import { toPng } from 'html-to-image';
 import './App.css';
@@ -175,6 +175,7 @@ const SolarForm = ({ onCalculate, loading }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showComponents, setShowComponents] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
+  const [showSystemDetails, setShowSystemDetails] = useState(false);
   
   const [formData, setFormData] = useState({
     // Customer Info
@@ -209,6 +210,9 @@ const SolarForm = ({ onCalculate, loading }) => {
     
     // Company Info (defaults)
     companyInfo: DEFAULT_COMPANY_INFO,
+
+    // System Details (defaults)
+    systemDetails: DEFAULT_SYSTEM_DETAILS,
     
     // Proposal
     proposalNumber: '1'
@@ -228,6 +232,19 @@ const SolarForm = ({ onCalculate, loading }) => {
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
+  };
+
+  const handleSystemDetailsChange = (section, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      systemDetails: {
+        ...prev.systemDetails,
+        [section]: {
+          ...prev.systemDetails[section],
+          [field]: value
+        }
+      }
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -414,6 +431,532 @@ const SolarForm = ({ onCalculate, loading }) => {
               </div>
             )}
           </div>
+
+          {/* Company Details Toggle */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => setShowCompany(!showCompany)}
+              className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-amber-600 transition-colors p-2"
+            >
+              <FileText size={16} />
+              {showCompany ? "Hide Company Profile" : "Edit Company Profile"}
+              {showCompany ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+          </div>
+
+          {showCompany && (
+            <div className="space-y-6 p-4 bg-slate-50 rounded-xl border border-slate-100 animate-in fade-in slide-in-from-top-2">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Company Brand Name</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, brandName: e.target.value }
+                    }))}
+                    value={formData.companyInfo.brandName}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    placeholder="e.g. RESLINK ENERGY"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Company Full Name</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, name: e.target.value }
+                    }))}
+                    value={formData.companyInfo.name}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    placeholder="e.g. Reslink Technologies Pvt. Ltd."
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Quotation Created By</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, presenterName: e.target.value }
+                    }))}
+                    value={formData.companyInfo.presenterName}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    placeholder="e.g. Aditya Deshmukh"
+                  />
+                </div>
+                 <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Company Logo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setFormData(prev => ({
+                            ...prev,
+                            companyInfo: { ...prev.companyInfo, logo: reader.result }
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-sm"
+                  />
+                  {formData.companyInfo.logo && (
+                    <img src={formData.companyInfo.logo} alt="Logo Preview" className="h-10 object-contain mt-2" />
+                  )}
+                </div>
+              </div>
+
+              <hr className="border-slate-200" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                 <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Phone Number</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { 
+                        ...prev.companyInfo, 
+                        contact: { ...prev.companyInfo.contact, phone: e.target.value } 
+                      }
+                    }))}
+                    value={formData.companyInfo.contact.phone}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Email Address</label>
+                  <input
+                    type="email"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { 
+                        ...prev.companyInfo, 
+                        contact: { ...prev.companyInfo.contact, email: e.target.value } 
+                      }
+                    }))}
+                    value={formData.companyInfo.contact.email}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                  />
+                </div>
+                 <div className="space-y-1 md:col-span-2">
+                  <label className="text-xs font-semibold text-slate-500">Address</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { 
+                        ...prev.companyInfo, 
+                        contact: { ...prev.companyInfo.contact, address: e.target.value } 
+                      }
+                    }))}
+                    value={formData.companyInfo.contact.address}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                  />
+                </div>
+                <div className="space-y-1 md:col-span-2">
+                  <label className="text-xs font-semibold text-slate-500">Website</label>
+                   <input
+                    type="text"
+                     onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { 
+                        ...prev.companyInfo, 
+                        contact: { ...prev.companyInfo.contact, website: e.target.value } 
+                      }
+                    }))}
+                    value={formData.companyInfo.contact.website}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                  />
+                </div>
+              </div>
+
+               <hr className="border-slate-200" />
+               
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                 <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Total Capacity</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, totalCapacity: e.target.value }
+                    }))}
+                    value={formData.companyInfo.totalCapacity}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    placeholder="e.g. 45Mw"
+                  />
+                </div>
+                 <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Happy Customers</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, happyCustomers: e.target.value }
+                    }))}
+                    value={formData.companyInfo.happyCustomers}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                     placeholder="e.g. 350+"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Cities</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, cities: e.target.value }
+                    }))}
+                    value={formData.companyInfo.cities}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                     placeholder="e.g. 10+"
+                  />
+                </div>
+               </div>
+
+            </div>
+          )}
+
+          {/* System Details Toggle */}
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => setShowSystemDetails(!showSystemDetails)}
+              className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-amber-600 transition-colors p-2"
+            >
+              <Settings size={16} />
+              {showSystemDetails ? "Hide System Details" : "Edit System Details"}
+              {showSystemDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+          </div>
+
+          {showSystemDetails && (
+            <div className="space-y-6 p-4 bg-slate-50 rounded-xl border border-slate-100 animate-in fade-in slide-in-from-top-2">
+              
+              {/* 1. Panels Details */}
+              <div>
+                <h4 className="font-bold text-slate-700 mb-3">1. Panels Details</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Panel Capacity (Wp)</label>
+                    <input
+                      type="number"
+                      max="1200"
+                      value={formData.systemDetails.panels.capacity}
+                      onChange={(e) => handleSystemDetailsChange('panels', 'capacity', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                      placeholder="e.g. 550"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Technology</label>
+                    <select
+                      value={formData.systemDetails.panels.technology}
+                      onChange={(e) => handleSystemDetailsChange('panels', 'technology', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="TOPCon">TOPCon</option>
+                      <option value="HJT">HJT</option>
+                      <option value="Mono PERC">Mono PERC</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Company</label>
+                    <select
+                      value={['Waaree Energies', 'Adani Solar', 'Tata Power Solar', 'Vikram Solar'].includes(formData.systemDetails.panels.company) ? formData.systemDetails.panels.company : 'Other'}
+                      onChange={(e) => handleSystemDetailsChange('panels', 'company', e.target.value === 'Other' ? '' : e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="Waaree Energies">Waaree Energies</option>
+                      <option value="Adani Solar">Adani Solar</option>
+                      <option value="Tata Power Solar">Tata Power Solar</option>
+                      <option value="Vikram Solar">Vikram Solar</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {(!['Waaree Energies', 'Adani Solar', 'Tata Power Solar', 'Vikram Solar'].includes(formData.systemDetails.panels.company)) && (
+                      <input
+                        type="text"
+                        placeholder="Enter brand name"
+                        value={formData.systemDetails.panels.company}
+                        onChange={(e) => handleSystemDetailsChange('panels', 'company', e.target.value)}
+                        className="w-full p-2 mt-1 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Type</label>
+                    <select
+                      value={formData.systemDetails.panels.type}
+                      onChange={(e) => handleSystemDetailsChange('panels', 'type', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="Bifacial">Bifacial</option>
+                      <option value="Monofacial">Monofacial</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <hr className="border-slate-200" />
+
+              {/* 2. Inverter Details */}
+              <div>
+                <h4 className="font-bold text-slate-700 mb-3">2. Inverter Details</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Capacity</label>
+                    <select
+                      value={formData.systemDetails.inverter.capacity}
+                      onChange={(e) => handleSystemDetailsChange('inverter', 'capacity', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      {Array.from({ length: 20 }, (_, i) => i + 1).map(k => (
+                        <option key={k} value={`${k}kw`}>{k}kw</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Type</label>
+                    <select
+                      value={formData.systemDetails.inverter.type}
+                      onChange={(e) => handleSystemDetailsChange('inverter', 'type', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="Ongrid">Ongrid</option>
+                      <option value="Offgrid">Offgrid</option>
+                      <option value="Hybrid">Hybrid</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Warranty</label>
+                    <select
+                      value={formData.systemDetails.inverter.warranty}
+                      onChange={(e) => handleSystemDetailsChange('inverter', 'warranty', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      {Array.from({ length: 15 }, (_, i) => i + 1).map(y => (
+                        <option key={y} value={`${y} years`}>{y} years</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Company</label>
+                    <select
+                       value={['Havells', 'Adani Solar', 'Waaree', 'Luminous', 'Sungrow', 'Growatt'].includes(formData.systemDetails.inverter.company) ? formData.systemDetails.inverter.company : 'Other'}
+                       onChange={(e) => handleSystemDetailsChange('inverter', 'company', e.target.value === 'Other' ? '' : e.target.value)}
+                       className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="Havells">Havells</option>
+                      <option value="Adani Solar">Adani Solar</option>
+                      <option value="Waaree">Waaree</option>
+                      <option value="Luminous">Luminous</option>
+                      <option value="Sungrow">Sungrow</option>
+                      <option value="Growatt">Growatt</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {(!['Havells', 'Adani Solar', 'Waaree', 'Luminous', 'Sungrow', 'Growatt'].includes(formData.systemDetails.inverter.company)) && (
+                      <input
+                        type="text"
+                        placeholder="Enter brand name"
+                        value={formData.systemDetails.inverter.company}
+                        onChange={(e) => handleSystemDetailsChange('inverter', 'company', e.target.value)}
+                        className="w-full p-2 mt-1 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+               <hr className="border-slate-200" />
+
+              {/* 3. Structure Details */}
+              <div>
+                <h4 className="font-bold text-slate-700 mb-3">3. Structure Details</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Material</label>
+                     <select
+                       value={['Stainless Steel (SS)', 'Pre-Galvanized (GP)', 'Aluminium', 'HDGI (Hot-Dip Galvanized Iron)', 'GI (Galvanized Iron)'].includes(formData.systemDetails.structure.material) ? formData.systemDetails.structure.material : 'Other'}
+                       onChange={(e) => handleSystemDetailsChange('structure', 'material', e.target.value === 'Other' ? '' : e.target.value)}
+                       className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="Stainless Steel (SS)">Stainless Steel (SS)</option>
+                      <option value="Pre-Galvanized (GP)">Pre-Galvanized (GP)</option>
+                      <option value="Aluminium">Aluminium</option>
+                      <option value="HDGI (Hot-Dip Galvanized Iron)">HDGI (Hot-Dip Galvanized Iron)</option>
+                      <option value="GI (Galvanized Iron)">GI (Galvanized Iron)</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {(!['Stainless Steel (SS)', 'Pre-Galvanized (GP)', 'Aluminium', 'HDGI (Hot-Dip Galvanized Iron)', 'GI (Galvanized Iron)'].includes(formData.systemDetails.structure.material)) && (
+                      <input
+                        type="text"
+                        placeholder="Enter material"
+                        value={formData.systemDetails.structure.material}
+                        onChange={(e) => handleSystemDetailsChange('structure', 'material', e.target.value)}
+                        className="w-full p-2 mt-1 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Front Leg Height</label>
+                     <select
+                      value={formData.systemDetails.structure.legHeightFront}
+                      onChange={(e) => handleSystemDetailsChange('structure', 'legHeightFront', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                       {Array.from({ length: 25 }, (_, i) => i + 1).map(h => (
+                        <option key={h} value={`${h} feet`}>{h} feet</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Back Leg Height</label>
+                    <select
+                      value={formData.systemDetails.structure.legHeightBack}
+                      onChange={(e) => handleSystemDetailsChange('structure', 'legHeightBack', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                       {Array.from({ length: 25 }, (_, i) => i + 1).map(h => (
+                        <option key={h} value={`${h} feet`}>{h} feet</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1 col-span-1 md:col-span-3">
+                    <label className="text-xs font-semibold text-slate-500">Dimensions (Leg & Rafter)</label>
+                    <textarea
+                      value={formData.systemDetails.structure.dimensionsLabel}
+                      onChange={(e) => handleSystemDetailsChange('structure', 'dimensionsLabel', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base h-20"
+                      placeholder="e.g. Leg: C 150x70x15x2 mm..."
+                    />
+                  </div>
+                </div>
+                 <div className="flex gap-6 mt-4 flex-wrap">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.systemDetails.structure.nutBolt}
+                        onChange={(e) => handleSystemDetailsChange('structure', 'nutBolt', e.target.checked)}
+                        className="accent-amber-500 w-4 h-4"
+                      />
+                      <span className="text-sm font-medium text-slate-700">Nut Bolt Structure</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.systemDetails.structure.pathway}
+                        onChange={(e) => handleSystemDetailsChange('structure', 'pathway', e.target.checked)}
+                        className="accent-amber-500 w-4 h-4"
+                      />
+                      <span className="text-sm font-medium text-slate-700">Pathway</span>
+                    </label>
+                     <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.systemDetails.structure.cChannel}
+                        onChange={(e) => handleSystemDetailsChange('structure', 'cChannel', e.target.checked)}
+                        className="accent-amber-500 w-4 h-4"
+                      />
+                      <span className="text-sm font-medium text-slate-700">C-Channel</span>
+                    </label>
+                  </div>
+              </div>
+
+               <hr className="border-slate-200" />
+
+              {/* 4. Electrical Components */}
+              <div>
+                <h4 className="font-bold text-slate-700 mb-3">4. Electrical Components</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">ACDB/DCDB Brand</label>
+                     <select
+                       value={['Polycab', 'L & T'].includes(formData.systemDetails.electrical.acdbDcdb) ? formData.systemDetails.electrical.acdbDcdb : 'Other'}
+                       onChange={(e) => handleSystemDetailsChange('electrical', 'acdbDcdb', e.target.value === 'Other' ? '' : e.target.value)}
+                       className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="Polycab">Polycab</option>
+                      <option value="L & T">L & T</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {(!['Polycab', 'L & T'].includes(formData.systemDetails.electrical.acdbDcdb)) && (
+                      <input
+                        type="text"
+                        placeholder="Enter brand name"
+                        value={formData.systemDetails.electrical.acdbDcdb}
+                        onChange={(e) => handleSystemDetailsChange('electrical', 'acdbDcdb', e.target.value)}
+                        className="w-full p-2 mt-1 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Earthing Kit Brand</label>
+                     <select
+                       value={['SG Power', 'Polycab'].includes(formData.systemDetails.electrical.earthing) ? formData.systemDetails.electrical.earthing : 'Other'}
+                       onChange={(e) => handleSystemDetailsChange('electrical', 'earthing', e.target.value === 'Other' ? '' : e.target.value)}
+                       className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="SG Power">SG Power</option>
+                      <option value="Polycab">Polycab</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {(!['SG Power', 'Polycab'].includes(formData.systemDetails.electrical.earthing)) && (
+                      <input
+                        type="text"
+                        placeholder="Enter brand name"
+                        value={formData.systemDetails.electrical.earthing}
+                        onChange={(e) => handleSystemDetailsChange('electrical', 'earthing', e.target.value)}
+                        className="w-full p-2 mt-1 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">MC4 Connectors</label>
+                     <select
+                       value={['True Power', 'Polycab'].includes(formData.systemDetails.electrical.mc4) ? formData.systemDetails.electrical.mc4 : 'Other'}
+                       onChange={(e) => handleSystemDetailsChange('electrical', 'mc4', e.target.value === 'Other' ? '' : e.target.value)}
+                       className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                      <option value="True Power">True Power</option>
+                      <option value="Polycab">Polycab</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {(!['True Power', 'Polycab'].includes(formData.systemDetails.electrical.mc4)) && (
+                      <input
+                        type="text"
+                        placeholder="Enter brand name"
+                        value={formData.systemDetails.electrical.mc4}
+                        onChange={(e) => handleSystemDetailsChange('electrical', 'mc4', e.target.value)}
+                        className="w-full p-2 mt-1 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                    )}
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">AC Cable Size</label>
+                    <select
+                      value={formData.systemDetails.electrical.cableSize}
+                      onChange={(e) => handleSystemDetailsChange('electrical', 'cableSize', e.target.value)}
+                      className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                    >
+                       {Array.from({ length: 10 }, (_, i) => i + 1).map(s => (
+                        <option key={s} value={`${s}sq mm`}>{s}sq mm</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
 
           {/* Advanced Options Toggle */}
           <div className="pt-2">
