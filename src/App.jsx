@@ -168,8 +168,328 @@ const processChartData = (outputs, capacity) => {
 };
 
 // ==========================================
-// 2. COMPONENT: SOLAR FORM
+// 2. COMPONENT: FINANCE SECTION
 // ==========================================
+const FinanceSection = ({ formData, setFormData }) => {
+  const [showFinance, setShowFinance] = useState(true);
+
+  // Helper: Calculate EMI for a given tenure (in months)
+  const calculateEMIForTenure = (principal, rate, months) => {
+    const monthlyRate = rate / 12 / 100;
+    if (months === 0) return principal; // Avoid division by zero
+    return Math.round((principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1));
+  };
+
+  // Helper: Calculate Tenure (in months) for a given EMI Amount
+  const calculateTenureForEMI = (principal, rate, emiAmount) => {
+    const monthlyRate = rate / 12 / 100;
+    // Safety check: EMI must be greater than monthly interest
+    if (emiAmount <= principal * monthlyRate) return 120; // Default to max 10 years if invalid
+    const numerator = Math.log(emiAmount / (emiAmount - principal * monthlyRate));
+    const denominator = Math.log(1 + monthlyRate);
+    return Math.round(numerator / denominator);
+  };
+
+  // Auto-update Interest Rate based on Plant Price
+  useEffect(() => {
+    const cost = parseFloat(formData.finance?.plantCost) || 0;
+    const recommendedRate = cost > 200000 ? 8 : 6;
+    
+    // Only update if current matches defaults (or just force update on price crossing thresholds?)
+    // Simple approach: Update logic.
+    setFormData(prev => ({
+        ...prev,
+        finance: {
+            ...prev.finance,
+            emi: {
+                ...prev.finance.emi,
+                interestRate: recommendedRate
+            }
+        }
+    }));
+  }, [formData.finance?.plantCost]);
+
+  const plantCost = parseFloat(formData.finance?.plantCost) || 0;
+  const discount = parseFloat(formData.finance?.discount) || 0;
+  const subsidy = parseFloat(formData.finance?.subsidy) || 0;
+  
+  // Payment Terms Vars
+  const terms = formData.finance?.paymentTerms || {
+      advance: 10, procurement: 60, installation: 20, netMetering: 10
+  };
+
+  const payableAmount = plantCost - discount;
+  const loanAmount = Math.max(0, payableAmount - subsidy);
+
+  // EMI Vars
+  const interestRate = formData.finance?.emi?.interestRate || 6;
+  const minEMI = calculateEMIForTenure(loanAmount, interestRate, 120); 
+  const maxEMI = calculateEMIForTenure(loanAmount, interestRate, 6);
+
+  const handleEMIChange = (e) => {
+    const newAmount = parseInt(e.target.value);
+    const newTenureMonths = calculateTenureForEMI(loanAmount, interestRate, newAmount);
+    
+    setFormData(prev => ({
+      ...prev,
+      finance: {
+        ...prev.finance,
+        emi: {
+          ...prev.finance.emi,
+          amount: newAmount,
+          tenureMonths: newTenureMonths
+        }
+      }
+    }));
+  };
+  
+  const handleRateChange = (e) => {
+      const newRate = parseFloat(e.target.value) || 0;
+      setFormData(prev => ({
+          ...prev,
+          finance: {
+              ...prev.finance,
+              emi: {
+                  ...prev.finance.emi,
+                  interestRate: newRate
+              }
+          }
+      }));
+  };
+
+  const handleFinanceChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      finance: {
+        ...prev.finance,
+        [field]: value
+      }
+    }));
+  };
+
+  const handlePaymentTermChange = (field, value) => {
+    let newVal = parseFloat(value) || 0;
+    
+    // Sum of others
+    let currentSum = 0;
+    if(field !== 'advance') currentSum += terms.advance;
+    if(field !== 'procurement') currentSum += terms.procurement;
+    if(field !== 'installation') currentSum += terms.installation;
+    
+    if(currentSum + newVal > 100) newVal = 100 - currentSum;
+    
+    const newNetMetering = 100 - (currentSum + newVal);
+
+    setFormData(prev => ({
+      ...prev,
+      finance: {
+        ...prev.finance,
+        paymentTerms: {
+          ...prev.finance.paymentTerms,
+          [field]: newVal,
+          netMetering: newNetMetering
+        }
+      }
+    }));
+  };
+
+  const handleEMIToggle = (checked) => {
+     setFormData(prev => ({
+      ...prev,
+      finance: {
+        ...prev.finance,
+        emi: {
+          ...prev.finance.emi,
+          enabled: checked,
+          amount: checked ? calculateEMIForTenure(loanAmount, interestRate, 60) : prev.finance.emi.amount,
+          tenureMonths: checked ? 60 : prev.finance.emi.tenureMonths
+        }
+      }
+    }));
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-4 md:p-8 space-y-6">
+       <button
+          type="button"
+          onClick={() => setShowFinance(!showFinance)}
+          className="flex items-center justify-between w-full text-left"
+        >
+          <label className="text-base font-bold text-slate-700 flex items-center gap-2 cursor-pointer">
+            <IndianRupee size={20} className="text-amber-500"/> Finance & Payment Terms
+          </label>
+          {showFinance ? <ChevronUp size={20} className="text-slate-400" /> : <ChevronDown size={20} className="text-slate-400" />}
+        </button>
+
+        {showFinance && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-top-2">
+            {/* 1. Cost Breakdown */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+               <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Plant Price (inc. GST)</label>
+                  <input
+                    type="number"
+                    value={formData.finance?.plantCost || ''}
+                    onChange={(e) => handleFinanceChange('plantCost', e.target.value)}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-md text-base font-medium"
+                  />
+               </div>
+               <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Discount</label>
+                  <input
+                    type="number"
+                    value={formData.finance?.discount}
+                    onChange={(e) => handleFinanceChange('discount', e.target.value)}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-md text-base"
+                  />
+               </div>
+               <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-500">Subsidy Amount</label>
+                  <input
+                    type="number"
+                    value={formData.finance?.subsidy}
+                    onChange={(e) => handleFinanceChange('subsidy', e.target.value)}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-md text-base"
+                  />
+               </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 2. Payment Terms */}
+            <div>
+               <h4 className="font-bold text-slate-700 mb-3 text-sm flex items-center gap-2">
+                 Payment Terms (%) <span className="text-xs font-normal text-slate-400">(Total must be 100%)</span>
+               </h4>
+               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Advance</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={formData.finance?.paymentTerms?.advance}
+                        onChange={(e) => handlePaymentTermChange('advance', e.target.value)}
+                        className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                      <span className="absolute right-3 top-2 text-slate-400 text-sm">%</span>
+                    </div>
+                  </div>
+                   <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Procurement</label>
+                     <div className="relative">
+                      <input
+                        type="number"
+                        value={formData.finance?.paymentTerms?.procurement}
+                        onChange={(e) => handlePaymentTermChange('procurement', e.target.value)}
+                        className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                      <span className="absolute right-3 top-2 text-slate-400 text-sm">%</span>
+                    </div>
+                  </div>
+                   <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Installation</label>
+                     <div className="relative">
+                      <input
+                        type="number"
+                        value={formData.finance?.paymentTerms?.installation}
+                        onChange={(e) => handlePaymentTermChange('installation', e.target.value)}
+                        className="w-full p-2 bg-white border border-slate-200 rounded-md text-base"
+                      />
+                      <span className="absolute right-3 top-2 text-slate-400 text-sm">%</span>
+                    </div>
+                  </div>
+                   <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500">Net Metering (Auto)</label>
+                     <div className="relative">
+                      <div className="w-full p-2 bg-slate-100 border border-slate-200 rounded-md text-base text-slate-500 font-medium font-mono text-center">
+                        {formData.finance?.paymentTerms?.netMetering}
+                      </div>
+                      <span className="absolute right-3 top-2 text-slate-400 text-sm">%</span>
+                    </div>
+                  </div>
+               </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 3. EMI Section */}
+             <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <PiggyBank size={18} className="text-amber-600"/> 
+                    Enable EMI Options?
+                  </label>
+                  
+                  <div className="flex items-center gap-4">
+                      {/* Interest Rate Input */}
+                      <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-amber-200">
+                        <span className="text-xs font-semibold text-slate-500">Rate:</span>
+                        <input 
+                            type="number" 
+                            step="0.1"
+                            value={interestRate}
+                            onChange={handleRateChange}
+                            className="w-12 text-sm font-bold text-amber-600 outline-none text-right"
+                        />
+                        <span className="text-xs font-bold text-amber-600">%</span>
+                      </div>
+
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={formData.finance?.emi?.enabled || false} 
+                          onChange={(e) => handleEMIToggle(e.target.checked)} 
+                          className="sr-only peer" 
+                        />
+                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                      </label>
+                  </div>
+                </div>
+
+                {formData.finance?.emi?.enabled && (
+                  <div className="animate-in fade-in slide-in-from-top-2 space-y-6">
+                    <div className="flex justify-between items-end">
+                       <div>
+                          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Monthly EMI</p>
+                           <p className="text-3xl font-bold text-slate-800">₹{formData.finance.emi.amount?.toLocaleString()}</p>
+                       </div>
+                       <div className="text-right">
+                          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Repayment Period</p>
+                          <p className="text-xl font-bold text-amber-600">
+                            {Math.floor(formData.finance.emi.tenureMonths / 12)} Years {formData.finance.emi.tenureMonths % 12} Months
+                          </p>
+                       </div>
+                    </div>
+
+                    <div>
+                      <input 
+                        type="range" 
+                        min={minEMI || 0} 
+                        max={maxEMI || 1000} 
+                        step={100}
+                        value={formData.finance.emi.amount || minEMI} 
+                        onChange={handleEMIChange}
+                        className="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                      />
+                      <div className="flex justify-between mt-2 text-xs text-slate-400 font-medium">
+                        <span>₹{minEMI?.toLocaleString() || 0} (10 Years)</span>
+                        <span>₹{maxEMI?.toLocaleString() || 0} (6 Months)</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+             </div>
+
+          </div>
+        )}
+    </div>
+  );
+};
+
+// ==========================================
+// 3. COMPONENT: SOLAR FORM
+// ==========================================
+
 
 const SolarForm = ({ onCalculate, loading }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -189,8 +509,8 @@ const SolarForm = ({ onCalculate, loading }) => {
     
     // System
     capacity: '3',
-    plantCost: '195000', 
-    
+    // plantCost: '195000', // Moved to finance object, but keeping for compatibility if needed temporarily or refactor completely
+
     // Advanced
     module_type: '0', 
     array_type: '0',
@@ -198,10 +518,24 @@ const SolarForm = ({ onCalculate, loading }) => {
     tilt: '', 
     azimuth: '180',
     
-    // Finance
-    isLoanEnabled: false,
-    loanTenure: 5,
-    interestRate: 6,
+    // Finance (New Section)
+    finance: {
+      plantCost: '195000',
+      discount: 0,
+      subsidy: 78000, // Default for 3kW
+      paymentTerms: {
+        advance: 10,
+        procurement: 60,
+        installation: 20,
+        netMetering: 10
+      },
+      emi: {
+        enabled: false,
+        amount: 3500, // Placeholder
+        tenureMonths: 60,
+        interestRate: 6 // Fixed
+      }
+    },
     
     // Components (defaults)
     panels: DEFAULT_PANELS,
@@ -221,11 +555,33 @@ const SolarForm = ({ onCalculate, loading }) => {
   useEffect(() => {
     const cap = parseFloat(formData.capacity);
     if (!isNaN(cap)) {
-      if (cap >= 3 && cap <= 3.5) {
-        setFormData(prev => ({ ...prev, plantCost: '195000' }));
+      let cost = '195000';
+      let sub = 78000;
+
+      if (cap >= 1 && cap < 2) {
+         sub = 30000;
+         cost = '90000'; // Approx
+      } else if (cap >= 2 && cap < 3) {
+         sub = 60000;
+         cost = '140000'; // Approx
+      } else if (cap >= 3 && cap <= 3.5) {
+        cost = '195000';
+        sub = 78000;
       } else if (cap >= 5 && cap <= 5.5) {
-        setFormData(prev => ({ ...prev, plantCost: '280000' }));
+        cost = '280000';
+        sub = 78000; // Cap at 78k
+      } else if (cap > 3) {
+        sub = 78000; // Cap at 78k for >3kw
       }
+
+      setFormData(prev => ({ 
+        ...prev, 
+        finance: {
+          ...prev.finance,
+          plantCost: cost,
+          subsidy: sub
+        }
+      }));
     }
   }, [formData.capacity]);
 
@@ -360,77 +716,11 @@ const SolarForm = ({ onCalculate, loading }) => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-base font-bold text-slate-700 flex items-center gap-2">
-                <IndianRupee size={20} className="text-amber-500" /> Plant Cost (Pre-Subsidy)
-              </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                name="plantCost"
-                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none text-base"
-                value={formData.plantCost}
-                onChange={handleChange}
-                required
-              />
-            </div>
+             {/* System Size input removed (duplicate) */}
+             <FinanceSection formData={formData} setFormData={setFormData} />
           </div>
 
           <hr className="border-slate-100" />
-
-          {/* EMI Section */}
-          <div className="bg-amber-50/50 p-4 md:p-5 rounded-xl border border-amber-100 space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                <PiggyBank size={18} className="text-amber-600"/> 
-                Enable EMI / Finance?
-              </label>
-              <div className="flex items-center gap-3">
-                <span className={`text-sm font-medium ${!formData.isLoanEnabled ? 'text-slate-600' : 'text-slate-400'}`}>No</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    name="isLoanEnabled" 
-                    checked={formData.isLoanEnabled} 
-                    onChange={handleChange} 
-                    className="sr-only peer" 
-                  />
-                  <div className="w-12 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-amber-500"></div>
-                </label>
-                <span className={`text-sm font-medium ${formData.isLoanEnabled ? 'text-amber-600' : 'text-slate-400'}`}>Yes</span>
-              </div>
-            </div>
-
-            {formData.isLoanEnabled && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-500">Interest Rate (% p.a.)</label>
-                  <input 
-                    type="number"
-                    inputMode="decimal" 
-                    name="interestRate" 
-                    step="0.1"
-                    value={formData.interestRate} 
-                    onChange={handleChange}
-                    className="w-full p-3 bg-white border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-amber-500 outline-none"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-500">Tenure: <span className="text-amber-600 font-bold">{formData.loanTenure} Years</span></label>
-                  <input 
-                    type="range" 
-                    name="loanTenure" 
-                    min="0.5" 
-                    max="10" 
-                    step="0.5" 
-                    value={formData.loanTenure} 
-                    onChange={handleChange}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500 mt-4"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
 
           {/* Company Details Toggle */}
           <div className="pt-2">
@@ -1021,7 +1311,7 @@ const SolarForm = ({ onCalculate, loading }) => {
 // 3. COMPONENT: SOLAR RESULTS
 // ==========================================
 
-const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) => {
+const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF, isDownloading }) => {
   const chartData = processChartData(result.outputs, parseFloat(formData.capacity)); 
   const yearlyDailyAverage = (result.outputs.ac_annual / 365).toFixed(1);
   const roiChartRef = useRef(null);
@@ -1040,9 +1330,18 @@ const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) 
         
         <button
           onClick={() => onGeneratePDF(roiChartRef, generationChartRef)}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all active:scale-[0.98]"
+          disabled={isDownloading}
+          className={`flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all active:scale-[0.98] ${isDownloading ? 'opacity-70 cursor-not-allowed' : ''}`}
         >
-          <Download size={20} /> Download PDF Quotation
+          {isDownloading ? (
+            <>
+              <Loader2 size={20} className="animate-spin" /> Downloading...
+            </>
+          ) : (
+            <>
+              <Download size={20} /> Download PDF Quotation
+            </>
+          )}
         </button>
       </div>
 
@@ -1323,6 +1622,7 @@ const SolarResults = ({ result, financials, formData, onReset, onGeneratePDF }) 
 
 export default function App() {
   const [loading, setLoading] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [financials, setFinancials] = useState(null);
@@ -1351,15 +1651,16 @@ export default function App() {
         advancedOptions
       );
       
-      const plantCost = parseFloat(data.plantCost) || 0;
+      const plantCost = parseFloat(data.finance?.plantCost) || 0;
       
+      // Update logic for financials to use new finance object if available
       const finData = calculateFinancials(
         parseFloat(data.capacity),
         plantCost,
         solarData.outputs.ac_annual,
-        data.isLoanEnabled,     
-        parseFloat(data.loanTenure),
-        parseFloat(data.interestRate) || 0
+        data.finance?.emi?.enabled,     
+        data.finance?.emi?.tenureMonths / 12 || 5,
+        6 // Fixed 6% as per requirements
       );
 
       const envImpact = calculateEnvironmentalImpact(solarData.outputs.ac_annual);
@@ -1376,6 +1677,7 @@ export default function App() {
 
   const handleGeneratePDF = async (roiChartRef, generationChartRef) => {
     try {
+      setIsDownloading(true);
       // Wait a bit to ensure charts are fully rendered
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -1396,7 +1698,7 @@ export default function App() {
 
       const envImpact = calculateEnvironmentalImpact(result.outputs.ac_annual);
 
-      setPdfData({
+      const newPdfData = {
         formData,
         result,
         financials,
@@ -1405,10 +1707,28 @@ export default function App() {
           roiChart: roiChartImage,
           generationChart: generationChartImage
         }
-      });
+      };
+
+      setPdfData(newPdfData);
+
+      // Trigger Download Immediately
+      const { pdf } = await import('@react-pdf/renderer');
+      const blob = await pdf(<QuotationPDF data={newPdfData} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Solar_Quotation_${formData.customerName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+
     } catch (err) {
       console.error('Error generating PDF:', err);
       setError('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -1515,37 +1835,11 @@ export default function App() {
             formData={formData}
             onReset={handleReset}
             onGeneratePDF={handleGeneratePDF}
+            isDownloading={isDownloading}
           />
         )}
 
-        {/* PDF Download Button */}
-        {pdfData && (
-          <div className="fixed bottom-4 right-4 z-50">
-            <button
-              onClick={async () => {
-                try {
-                  const { pdf } = await import('@react-pdf/renderer');
-                  const blob = await pdf(<QuotationPDF data={pdfData} />).toBlob();
-                  const url = URL.createObjectURL(blob);
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.download = `Solar_Quotation_${formData.customerName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
-                  link.style.display = 'none';
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                  setTimeout(() => URL.revokeObjectURL(url), 100);
-                } catch (err) {
-                  console.error('Error downloading PDF:', err);
-                  setError('Failed to download PDF. Please try again.');
-                }
-              }}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all active:scale-95"
-            >
-              <Download size={20} /> Download PDF
-            </button>
-          </div>
-        )}
+
 
       </div>
     </div>

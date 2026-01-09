@@ -208,7 +208,7 @@ const CoverPage = ({ data, logo }) => {
         </View>
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
-            <Image src={images.logo.companyFooter} style={{ width: 50, height: 12, objectFit: 'contain' }} />
+            <Image src={logo} style={{ width: 50, height: 12, objectFit: 'contain' }} />
             <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: 'bold', letterSpacing: 0.5, marginLeft: -10 }}>
               {data.formData.companyInfo.brandName}
             </Text>
@@ -236,22 +236,44 @@ const AboutReslinkPage = ({ data, logo }) => (
     </View>
 
     <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 15, letterSpacing: 0.5, textTransform: 'uppercase' }}>ABOUT {data.formData.companyInfo.brandName}</Text>
-    <Text style={{ fontSize: 11, lineHeight: 1.6, color: '#334155', marginBottom: 25 }}>{data.formData.companyInfo.missionStatement}</Text>
+    {/* Conditional Content: Combined Text if metrics are missing, otherwise Mission + Standard Metrics */
+    (parseInt(data.formData.companyInfo.happyCustomers) <= 0 && parseInt(data.formData.companyInfo.totalCapacity) <= 0) ? (
+      <View style={{ 
+        marginBottom: 20,
+        padding: 15,
+        backgroundColor: '#f8fafc',
+        borderRadius: 8,
+        border: '1px solid #e2e8f0'
+      }}>
+        <Text style={{ 
+          fontSize: 10, 
+          lineHeight: 1.5, 
+          color: '#334155', 
+          textAlign: 'justify' 
+        }}>
+          We are on a mission to deliver 10,000 world-class solar installations ensuring maximum performance, durability, and ROI for every project. Aditya Solar Energy is a leading rooftop solar solutions provider committed to making solar power affordable and hassle-free. We offer zero-investment solar systems with easy EMI options—pay an amount equal to your electricity bill and start saving from day one. With end-to-end installation, government subsidy assistance, and premium-quality panels backed by a 25-year warranty, we ensure long-term value and reliability. Serving residential, commercial, and industrial customers, we help you enjoy clean, cost-effective solar energy and free power for decades.
+        </Text>
+      </View>
+    ) : (
+      <>
+        <Text style={{ fontSize: 11, lineHeight: 1.6, color: '#334155', marginBottom: 25 }}>{data.formData.companyInfo.missionStatement}</Text>
 
-    <View style={{ flexDirection: 'row', gap: 15, marginBottom: 25 }}>
-      <View style={{ flex: 1, backgroundColor: '#000', color: 'white', padding: 20, borderRadius: 6, alignItems: 'center' }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 }}>{data.formData.companyInfo.totalCapacity}</Text>
-        <Text style={{ fontSize: 8, color: '#FFFFFF', opacity: 0.9, textTransform: 'uppercase', letterSpacing: 0.5 }}>{data.formData.companyInfo.totalCapacityLabel}</Text>
-      </View>
-      <View style={{ flex: 1, backgroundColor: '#000', color: 'white', padding: 20, borderRadius: 6, alignItems: 'center' }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 }}>{data.formData.companyInfo.happyCustomers}</Text>
-        <Text style={{ fontSize: 8, color: '#FFFFFF', opacity: 0.9, textTransform: 'uppercase', letterSpacing: 0.5 }}>{data.formData.companyInfo.happyCustomersLabel}</Text>
-      </View>
-      <View style={{ flex: 1, backgroundColor: '#000', color: 'white', padding: 20, borderRadius: 6, alignItems: 'center' }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 }}>{data.formData.companyInfo.cities}</Text>
-        <Text style={{ fontSize: 8, color: '#FFFFFF', opacity: 0.9, textTransform: 'uppercase', letterSpacing: 0.5 }}>{data.formData.companyInfo.citiesLabel}</Text>
-      </View>
-    </View>
+        <View style={{ flexDirection: 'row', gap: 15, marginBottom: 25 }}>
+          <View style={{ flex: 1, backgroundColor: '#000', color: 'white', padding: 20, borderRadius: 6, alignItems: 'center' }}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 }}>{data.formData.companyInfo.totalCapacity}</Text>
+            <Text style={{ fontSize: 8, color: '#FFFFFF', opacity: 0.9, textTransform: 'uppercase', letterSpacing: 0.5 }}>{data.formData.companyInfo.totalCapacityLabel}</Text>
+          </View>
+          <View style={{ flex: 1, backgroundColor: '#000', color: 'white', padding: 20, borderRadius: 6, alignItems: 'center' }}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 }}>{data.formData.companyInfo.happyCustomers}</Text>
+            <Text style={{ fontSize: 8, color: '#FFFFFF', opacity: 0.9, textTransform: 'uppercase', letterSpacing: 0.5 }}>{data.formData.companyInfo.happyCustomersLabel}</Text>
+          </View>
+          <View style={{ flex: 1, backgroundColor: '#000', color: 'white', padding: 20, borderRadius: 6, alignItems: 'center' }}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 }}>{data.formData.companyInfo.cities}</Text>
+            <Text style={{ fontSize: 8, color: '#FFFFFF', opacity: 0.9, textTransform: 'uppercase', letterSpacing: 0.5 }}>{data.formData.companyInfo.citiesLabel}</Text>
+          </View>
+        </View>
+      </>
+    )}
 
     {/* Large Solar Panels Image */}
     <View style={{ marginTop: 25, marginBottom: 20 }}>
@@ -260,23 +282,23 @@ const AboutReslinkPage = ({ data, logo }) => (
 
     <View style={{ marginTop: 20, alignItems: 'center' }}>
       <Text style={{ fontSize: 9, color: '#64748b', fontStyle: 'italic', lineHeight: 1.5, textAlign: 'center' }}>
-        {data.formData.companyInfo.footer.amcNote}
+        {data.formData.companyInfo.footer.amcNote.replace(/Reslink/g, data.formData.companyInfo.brandName)}
       </Text>
     </View>
 
-      <View style={[styles.footer, { 
-        flexDirection: 'row', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        paddingHorizontal: 30,
-        paddingVertical: 15,
-        borderTop: '1px solid #e5e7eb',
-        marginTop: 20
-      }]}>
-        <Text style={{ fontSize: 9 }}>{data.formData.capacity}kW Ongrid proposal</Text>
-        <Text style={{ fontSize: 9 }}>PAGE 2</Text>
-        <Text style={{ fontSize: 9 }}>Generated by {data.formData.companyInfo.name}</Text>
-      </View>
+    <View style={[styles.footer, { 
+      flexDirection: 'row', 
+      justifyContent: 'space-between', 
+      alignItems: 'center',
+      paddingHorizontal: 30,
+      paddingVertical: 15,
+      borderTop: '1px solid #e5e7eb',
+      marginTop: 20
+    }]}>
+      <Text style={{ fontSize: 9 }}>{data.formData.capacity}kW Ongrid proposal</Text>
+      <Text style={{ fontSize: 9 }}>PAGE 2</Text>
+      <Text style={{ fontSize: 9 }}>Generated by {data.formData.companyInfo.brandName}</Text>
+    </View>
   </Page>
 );
 
@@ -447,7 +469,7 @@ const ROIPage = ({ data, logo }) => (
       <View style={{ backgroundColor: '#d9d9d9', paddingVertical: 8, paddingHorizontal: 32 }}>
         {/* color: #000000, fontSize: 16px, fontWeight: 400 */}
         <Text style={{ color: '#000000', fontSize: 16, fontWeight: 400 }}>
-          Residential starts at 8% only
+          Residential starts at 6% only
         </Text>
       </View>
     </View>
@@ -564,7 +586,7 @@ const ComponentsPage = ({ data, logo }) => {
         </View>
 
         {/* Inverter Row */}
-        <View style={{ flexDirection: 'row', borderBottom: '1px solid #cbd5e1', backgroundColor: '#f5f5f5', minHeight: 80 }}>
+        <View style={{ flexDirection: 'row', borderBottom: '1px solid #cbd5e1', backgroundColor: '#e5e7eb', minHeight: 80 }}>
           <View style={{ flex: 18, padding: 10, borderRight: '1px solid #cbd5e1' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
                <Image src={images.components.inverter} style={{ width: 20, height: 20, marginRight: 5, objectFit: 'contain' }} />
@@ -575,7 +597,7 @@ const ComponentsPage = ({ data, logo }) => {
             <Text style={{ fontSize: 9, color: '#0284c7', fontWeight: 'bold' }}>Warranty: <Text style={{ color: '#000000', fontWeight: 'normal' }}>{systemDetails.inverter.warranty}</Text></Text>
           </View>
           <View style={{ flex: 12, padding: 10, borderRight: '1px solid #cbd5e1', justifyContent: 'center', alignItems: 'center' }}>
-             <Image src={images.brands.sungrow} style={{ width: 60, height: 30, objectFit: 'contain', marginBottom: 5 }} />
+             <Image src={systemDetails.inverter.company.toLowerCase().includes('polycab') ? images.brands.polycab : images.brands.sungrow} style={{ width: 60, height: 30, objectFit: 'contain', marginBottom: 5 }} />
              <Text style={{ fontSize: 9, color: '#64748b', textAlign: 'center' }}>{systemDetails.inverter.company}</Text>
           </View>
           <View style={{ flex: 15, padding: 10, justifyContent: 'center' }}>
@@ -603,7 +625,7 @@ const ComponentsPage = ({ data, logo }) => {
         </View>
 
         {/* Structure Row */}
-        <View style={{ flexDirection: 'row', borderBottom: '1px solid #cbd5e1', backgroundColor: '#f5f5f5', minHeight: 80 }}>
+        <View style={{ flexDirection: 'row', borderBottom: '1px solid #cbd5e1', backgroundColor: '#e5e7eb', minHeight: 80 }}>
           <View style={{ flex: 18, padding: 10, borderRight: '1px solid #cbd5e1' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
                <Image src={images.components.structure} style={{ width: 20, height: 20, marginRight: 5, objectFit: 'contain' }} />
@@ -676,7 +698,7 @@ const ComponentsPage = ({ data, logo }) => {
         </View>
 
         {/* Services Row */}
-        <View style={{ flexDirection: 'row', backgroundColor: '#f5f5f5', minHeight: 70 }}>
+        <View style={{ flexDirection: 'row', backgroundColor: '#e5e7eb', minHeight: 70 }}>
           <View style={{ flex: 18, padding: 10, borderRight: '1px solid #cbd5e1' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
                <Image src={images.components.services} style={{ width: 20, height: 20, marginRight: 5, objectFit: 'contain' }} />
@@ -842,25 +864,25 @@ const TimelinePage = ({ data, logo }) => {
         </View>
 
         {/* Top Left Box: Capacity */}
-        <View style={{ position: 'absolute', top: 30, left: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+        <View style={{ position: 'absolute', top: 30, left: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#e5e7eb' }}>
              <Image src={images.specs.capacity} style={{ width: 30, height: 30, marginBottom: 5 }} />
              <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>{data.formData.capacity}KW OF{'\n'}CAPACITY</Text>
         </View>
 
         {/* Bottom Left Box: Structure */}
-        <View style={{ position: 'absolute', top: 180, left: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+        <View style={{ position: 'absolute', top: 180, left: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#e5e7eb' }}>
              <Image src={images.specs.structure} style={{ width: 30, height: 30, marginBottom: 5 }} />
              <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>HDGI{'\n'}STRUCTURE</Text>
         </View>
 
         {/* Top Right Box: Inverter */}
-        <View style={{ position: 'absolute', top: 30, right: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+        <View style={{ position: 'absolute', top: 30, right: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#e5e7eb' }}>
              <Image src={images.specs.inverter} style={{ width: 30, height: 30, marginBottom: 5 }} />
              <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>GRID TIED{'\n'}INVERTER</Text>
         </View>
 
         {/* Bottom Right Box: Ongrid System */}
-        <View style={{ position: 'absolute', top: 180, right: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#f5f5f5' }}>
+        <View style={{ position: 'absolute', top: 180, right: 10, width: 150, padding: 10, border: '1.5px solid #000', borderRadius: 4, alignItems: 'center', backgroundColor: '#e5e7eb' }}>
              <Image src={images.specs.ongrid} style={{ width: 30, height: 30, marginBottom: 5 }} />
              <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center' }}>ONGRID{'\n'}SYSTEM</Text>
         </View>
@@ -884,7 +906,7 @@ const TimelinePage = ({ data, logo }) => {
       }]}>
         <Text style={{ fontSize: 9 }}>{data.formData.capacity}kW Ongrid proposal</Text>
         <Text style={{ fontSize: 9 }}>PAGE 5</Text>
-        <Text style={{ fontSize: 9 }}>Generated by Reslink</Text>
+        <Text style={{ fontSize: 9 }}>Generated by {data.formData.companyInfo.brandName}</Text>
       </View>
     </Page>
   );
@@ -892,21 +914,43 @@ const TimelinePage = ({ data, logo }) => {
 
 // Offer & Terms Page
 const OfferTermsPage = ({ data, logo }) => {
-  const incomingCost = parseInt(data.formData.plantCost) || 0;
-  const subsidyAmount = 78000; // Standard PM Surya Ghar subsidy
-  const discountAmount = 52000; // Fixed discount as per requirement
+  const incomingCost = parseFloat(data.formData.finance?.plantCost) || 0;
+  const subsidyAmount = parseFloat(data.formData.finance?.subsidy) || 0;
+  const discountAmount = parseFloat(data.formData.finance?.discount) || 0;
   
+  // Payment Terms
+  const terms = data.formData.finance?.paymentTerms || {
+    advance: 10,
+    procurement: 60,
+    installation: 20,
+    netMetering: 10
+  };
+
   // Calculation Flow:
   // 1. Incoming - Discount = Payable (Amount user pays to us)
   const payableAmount = incomingCost - discountAmount;
   
-  // 2. Payable includes GST (8.9%). Extract GST.
-  // Payable = Base * 1.089 => Base = Payable / 1.089
-  const baseSystemCost = Math.round(payableAmount / 1.089);
-  const gstAmount = payableAmount - baseSystemCost;
+  // 2. Payable includes GST (13.8% or 8.9% implied from reverse calc). 
+  // User logic: Base = Payable / 1.138 (assuming 13.8% GST for solar standard or use existing 8.9% logic)
+  const baseSystemCost = Math.round(payableAmount / 1.138); 
+  // const gstAmount = payableAmount - baseSystemCost;
 
   // 3. Final Cost for customer after subsidy
   const finalCost = payableAmount - subsidyAmount;
+
+  // EMI Data
+  const emiData = data.formData.finance?.emi || {};
+  const isEmiEnabled = emiData.enabled;
+  
+  // Display Logic for Payable Row
+  const payableLabel = "Payable Amount";
+  const payableValue = isEmiEnabled 
+    ? `Rs ${emiData.amount?.toLocaleString('en-IN')} / Month`
+    : `Rs ${payableAmount.toLocaleString('en-IN')}`;
+    
+  const payableSubtext = isEmiEnabled
+    ? `(for ${Math.floor(emiData.tenureMonths / 12)} Years ${emiData.tenureMonths % 12} Months)`
+    : "(including GST)";
 
   return (
     <Page size="A4" style={styles.page}>
@@ -951,13 +995,13 @@ const OfferTermsPage = ({ data, logo }) => {
         {/* Payable Amount */}
         <View style={{ flexDirection: 'row', borderBottom: '1px solid #e2e8f0', paddingVertical: 8, paddingHorizontal: 10, backgroundColor: '#f8fafc' }}>
           <View style={{ flex: 3 }}>
-              <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000000' }}>Payable Amount</Text>
+              <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000000' }}>{payableLabel}</Text>
               <Text style={{ fontSize: 7, color: '#64748b', marginTop: 2 }}>
-                  (including GST)
+                  {payableSubtext}
               </Text>
           </View>
           <View style={{ flex: 2, alignItems: 'flex-end' }}></View>
-          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000000' }}>Rs {payableAmount.toLocaleString('en-IN')}</Text></View>
+          <View style={{ flex: 2, alignItems: 'flex-end' }}><Text style={{ fontSize: 10, fontWeight: 'bold', color: '#000000' }}>{payableValue}</Text></View>
         </View>
 
         {/* Subsidy */}
@@ -1021,12 +1065,12 @@ const OfferTermsPage = ({ data, logo }) => {
                <Svg height="15" width="20" viewBox="0 0 20 15" style={{ marginTop: -15, marginBottom: 5 }}>
                  <Polygon points="0,0 20,0 10,15" fill="#02746A" />
                </Svg> 
-               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginTop: 30 }}>10%{'\n'}Advance</Text>
+               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginTop: 30 }}>{terms.advance}%{'\n'}Advance</Text>
             </View>
 
             {/* Step 2: Bottom Circle */}
             <View style={{ alignItems: 'center', width: 80 }}>
-               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>60%{'\n'}Procurement</Text>
+               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>{terms.procurement}%{'\n'}Procurement</Text>
                <Svg height="15" width="20" viewBox="0 0 20 15" style={{ marginBottom: -15, marginTop: 5 }}>
                  <Polygon points="10,0 20,15 0,15" fill="#000000" />
                </Svg>
@@ -1053,12 +1097,12 @@ const OfferTermsPage = ({ data, logo }) => {
                <Svg height="15" width="20" viewBox="0 0 20 15" style={{ marginTop: -15, marginBottom: 5 }}>
                  <Polygon points="0,0 20,0 10,15" fill="#02746A" />
                </Svg>
-               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginTop: 30 }}>20%{'\n'}Installation</Text>
+               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginTop: 30 }}>{terms.installation}%{'\n'}Installation</Text>
             </View>
 
             {/* Step 4: Bottom Circle */}
             <View style={{ alignItems: 'center', width: 80 }}>
-               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>10%{'\n'}Net metering</Text>
+               <Text style={{ fontSize: 10, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>{terms.netMetering}%{'\n'}Net metering</Text>
                <Svg height="15" width="20" viewBox="0 0 20 15" style={{ marginBottom: -15, marginTop: 5 }}>
                   <Polygon points="10,0 20,15 0,15" fill="#000000" />
                </Svg>

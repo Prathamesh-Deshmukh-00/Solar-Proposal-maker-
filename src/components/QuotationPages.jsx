@@ -45,7 +45,7 @@ export const CoverPage = ({ data }) => {
           </div>
           
           <div className="cover-company-info">
-            <p className="company-name">Reslink Technologies Pvt. Ltd.</p>
+            <p className="company-name">{data.formData.companyInfo.name}</p>
           </div>
           
           <div className="cover-proposal-number">
@@ -123,62 +123,84 @@ export const AboutReslinkPage = ({ data }) => (
       </div>
     </div>
 
-    <h2 className="section-title" style={{ fontSize: '32px', fontWeight: '700', marginBottom: '20px', letterSpacing: '0.5px' }}>ABOUT RESLINK</h2>
-    <p className="section-text" style={{ fontSize: '13px', lineHeight: '1.8', color: '#334155', marginBottom: '35px' }}>
-      {data.formData.companyInfo.missionStatement}
-    </p>
+    <h2 className="section-title" style={{ fontSize: '32px', fontWeight: '700', marginBottom: '20px', letterSpacing: '0.5px' }}>ABOUT {data.formData.companyInfo.brandName.toUpperCase()}</h2>
+    {/* Conditional Content: Combined Text if metrics are missing, otherwise Mission + Standard Metrics */
+    (parseInt(data.formData.companyInfo.happyCustomers) <= 0 && parseInt(data.formData.companyInfo.totalCapacity) <= 0) ? (
+      <div className="company-info-text" style={{ 
+        marginBottom: '20px',
+        padding: '15px',
+        backgroundColor: '#f8fafc',
+        borderRadius: '8px',
+        border: '1px solid #e2e8f0'
+      }}>
+        <p style={{ 
+          fontSize: '11px', 
+          lineHeight: '1.6', 
+          color: '#334155', 
+          margin: 0,
+          textAlign: 'justify' 
+        }}>
+          We are on a mission to deliver 10,000 world-class solar installations ensuring maximum performance, durability, and ROI for every project. Aditya Solar Energy is a leading rooftop solar solutions provider committed to making solar power affordable and hassle-free. We offer zero-investment solar systems with easy EMI options—pay an amount equal to your electricity bill and start saving from day one. With end-to-end installation, government subsidy assistance, and premium-quality panels backed by a 25-year warranty, we ensure long-term value and reliability. Serving residential, commercial, and industrial customers, we help you enjoy clean, cost-effective solar energy and free power for decades.
+        </p>
+      </div>
+    ) : (
+      <>
+        <p className="section-text" style={{ fontSize: '13px', lineHeight: '1.8', color: '#334155', marginBottom: '35px' }}>
+          {data.formData.companyInfo.missionStatement}
+        </p>
 
-    <div className="company-metrics" style={{ display: 'flex', gap: '20px', marginBottom: '35px' }}>
-      <div className="metric-card" style={{ 
-        flex: 1, 
-        background: '#000', 
-        color: 'white', 
-        padding: '25px 20px', 
-        borderRadius: '8px',
-        textAlign: 'center',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <div className="metric-value" style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>
-          {data.formData.companyInfo.totalCapacity}
+        <div className="company-metrics" style={{ display: 'flex', gap: '20px', marginBottom: '35px' }}>
+          <div className="metric-card" style={{ 
+            flex: 1, 
+            background: '#000', 
+            color: 'white', 
+            padding: '25px 20px', 
+            borderRadius: '8px',
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          }}>
+            <div className="metric-value" style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>
+              {data.formData.companyInfo.totalCapacity}
+            </div>
+            <div className="metric-label" style={{ fontSize: '10px', opacity: '0.9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              {data.formData.companyInfo.totalCapacityLabel}
+            </div>
+          </div>
+          <div className="metric-card" style={{ 
+            flex: 1, 
+            background: '#000', 
+            color: 'white', 
+            padding: '25px 20px', 
+            borderRadius: '8px',
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          }}>
+            <div className="metric-value" style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>
+              {data.formData.companyInfo.happyCustomers}
+            </div>
+            <div className="metric-label" style={{ fontSize: '10px', opacity: '0.9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              {data.formData.companyInfo.happyCustomersLabel}
+            </div>
+          </div>
+          <div className="metric-card" style={{ 
+            flex: 1, 
+            background: '#000', 
+            color: 'white', 
+            padding: '25px 20px', 
+            borderRadius: '8px',
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          }}>
+            <div className="metric-value" style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>
+              {data.formData.companyInfo.cities}
+            </div>
+            <div className="metric-label" style={{ fontSize: '10px', opacity: '0.9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              {data.formData.companyInfo.citiesLabel}
+            </div>
+          </div>
         </div>
-        <div className="metric-label" style={{ fontSize: '10px', opacity: '0.9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          {data.formData.companyInfo.totalCapacityLabel}
-        </div>
-      </div>
-      <div className="metric-card" style={{ 
-        flex: 1, 
-        background: '#000', 
-        color: 'white', 
-        padding: '25px 20px', 
-        borderRadius: '8px',
-        textAlign: 'center',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <div className="metric-value" style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>
-          {data.formData.companyInfo.happyCustomers}
-        </div>
-        <div className="metric-label" style={{ fontSize: '10px', opacity: '0.9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          {data.formData.companyInfo.happyCustomersLabel}
-        </div>
-      </div>
-      <div className="metric-card" style={{ 
-        flex: 1, 
-        background: '#000', 
-        color: 'white', 
-        padding: '25px 20px', 
-        borderRadius: '8px',
-        textAlign: 'center',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-      }}>
-        <div className="metric-value" style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>
-          {data.formData.companyInfo.cities}
-        </div>
-        <div className="metric-label" style={{ fontSize: '10px', opacity: '0.9', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          {data.formData.companyInfo.citiesLabel}
-        </div>
-      </div>
-    </div>
-
+      </>
+    )}
     {/* Large Solar Panels Image */}
     <div style={{ marginTop: '30px', marginBottom: '25px' }}>
       <img 
@@ -202,7 +224,7 @@ export const AboutReslinkPage = ({ data }) => (
       lineHeight: '1.6',
       textAlign: 'center'
     }}>
-      {data.formData.companyInfo.footer.amcNote}
+      {data.formData.companyInfo.footer.amcNote.replace(/Reslink/g, data.formData.companyInfo.brandName)}
     </p>
 
     <div className="page-footer" style={{ 
@@ -212,7 +234,7 @@ export const AboutReslinkPage = ({ data }) => (
     }}>
       <span>{data.formData.capacity}kW Ongrid proposal</span>
       <span>PAGE 2</span>
-      <span>Generated by {data.formData.companyInfo.name}</span>
+      <span>Generated by {data.formData.companyInfo.brandName}</span>
     </div>
   </div>
 );
@@ -295,7 +317,7 @@ export const AboutReslinkPage = ({ data }) => (
 //       }}>
 //         <span>{data.formData.capacity}kW Ongrid proposal</span>
 //         <span>PAGE 4</span>
-//         <span>Generated by Reslink</span>
+//         <span>Generated by {data.formData.companyInfo.brandName}</span>
 //       </div>
 //     </div>
 //   );
@@ -327,7 +349,7 @@ export const ROIPage = ({ data }) => (
     <div style={{ position: 'absolute', bottom: '20px', left: '40px', right: '40px', display: 'flex', justifyContent: 'space-between', fontSize: '9px' }}>
       <span>{data.formData.capacity}kW Ongrid proposal</span>
       <span>PAGE 4</span>
-      <span>Generated by Reslink</span>
+      <span>Generated by {data.formData.companyInfo.brandName}</span>
     </div>
   </div>
 );
@@ -444,7 +466,7 @@ export const GenerationPage = ({ data }) => {
       }}>
         <span>{data.formData.capacity}kW Ongrid proposal</span>
         <span>PAGE 3</span>
-        <span>Generated by Reslink</span>
+        <span>Generated by {data.formData.companyInfo.brandName}</span>
       </div>
     </div>
   );
@@ -455,7 +477,7 @@ export const ComponentsPage = ({ data }) => (
   <div className="quotation-page">
     <div className="page-header">
       <span className="header-subtitle">{data.formData.capacity}kW Ongrid Proposal</span>
-      <span className="header-logo">RESLINK ENERGY</span>
+      <span className="header-logo">{data.formData.companyInfo.brandName.toUpperCase()}</span>
     </div>
 
     <h2 className="section-title">COMPONENTS</h2>
@@ -497,7 +519,7 @@ export const ComponentsPage = ({ data }) => (
     <div className="page-footer">
       <span>{data.formData.capacity}kW Ongrid proposal</span>
       <span>PAGE 5</span>
-      <span>Generated by Reslink</span>
+      <span>Generated by {data.formData.companyInfo.brandName}</span>
     </div>
   </div>
 );
@@ -524,7 +546,7 @@ export const TimelinePage = ({ data }) => {
     <div className="quotation-page">
       <div className="page-header">
         <span className="header-subtitle">{data.formData.capacity}kW Ongrid Proposal</span>
-        <span className="header-logo">RESLINK ENERGY</span>
+        <span className="header-logo">{data.formData.companyInfo.brandName.toUpperCase()}</span>
       </div>
 
       <h2 className="section-title">TIMELINE</h2>
@@ -556,7 +578,7 @@ export const TimelinePage = ({ data }) => {
       <div className="page-footer">
         <span>{data.formData.capacity}kW Ongrid proposal</span>
         <span>PAGE 6</span>
-        <span>Generated by Reslink</span>
+        <span>Generated by {data.formData.companyInfo.brandName}</span>
       </div>
     </div>
   );
@@ -575,7 +597,7 @@ export const OfferTermsPage = ({ data }) => {
     <div className="quotation-page">
       <div className="page-header">
         <span className="header-subtitle">{data.formData.capacity}kW Ongrid Proposal</span>
-        <span className="header-logo">RESLINK ENERGY</span>
+        <span className="header-logo">{data.formData.companyInfo.brandName.toUpperCase()}</span>
       </div>
 
       <h2 className="section-title">OFFER & TERMS</h2>
@@ -629,7 +651,7 @@ export const OfferTermsPage = ({ data }) => {
       <div className="page-footer">
         <span>{data.formData.capacity}kW Ongrid proposal</span>
         <span>PAGE 7</span>
-        <span>Generated by Reslink</span>
+        <span>Generated by {data.formData.companyInfo.brandName}</span>
       </div>
     </div>
   );
@@ -640,7 +662,7 @@ export const EnvironmentPage = ({ data }) => (
   <div className="quotation-page">
     <div className="page-header">
       <span className="header-subtitle">{data.formData.capacity}kW Ongrid Proposal</span>
-      <span className="header-logo">RESLINK ENERGY</span>
+      <span className="header-logo">{data.formData.companyInfo.brandName.toUpperCase()}</span>
     </div>
 
     <h2 className="section-title">ENVIRONMENT IMPACT</h2>
@@ -666,7 +688,7 @@ export const EnvironmentPage = ({ data }) => (
     <div className="page-footer">
       <span>{data.formData.capacity}kW Ongrid proposal</span>
       <span>PAGE 8</span>
-      <span>Generated by Reslink</span>
+      <span>Generated by {data.formData.companyInfo.brandName}</span>
     </div>
   </div>
 );
@@ -676,7 +698,7 @@ export const ThankYouPage = ({ data }) => (
   <div className="quotation-page thank-you-page">
     <div className="page-header">
       <span className="header-subtitle">{data.formData.capacity}kW Ongrid Proposal</span>
-      <span className="header-logo">RESLINK ENERGY</span>
+      <span className="header-logo">{data.formData.companyInfo.brandName.toUpperCase()}</span>
     </div>
 
     <div className="thank-you-content">
@@ -708,7 +730,7 @@ export const ThankYouPage = ({ data }) => (
     </div>
 
     <div className="thank-you-footer">
-      {data.formData.capacity}kW Ongrid proposal • PAGE 9 • Generated by Reslink
+      {data.formData.capacity}kW Ongrid proposal • PAGE 9 • Generated by {data.formData.companyInfo.brandName}
     </div>
   </div>
 );
